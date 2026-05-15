@@ -7,6 +7,10 @@ zstyle ':vcs_info:git:*' formats '%b '
 setopt PROMPT_SUBST
 PROMPT='%F{green}%*%f %F{blue}%~%f %F{red}${vcs_info_msg_0_}%f$ '
 
+# ----- ctrl-arrow word movement -----
+bindkey '^[[1;5D' backward-word
+bindkey '^[[1;5C' forward-word
+
 # ----- homebrew -----
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -36,7 +40,7 @@ _fzf_compgen_dir() {
 
 # add git integration
 
-source ~/fzf-git.sh/fzf-git.sh
+source ~/.fzf-git.sh
 
 # use bat and eza for previews
 
