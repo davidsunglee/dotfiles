@@ -1,1 +1,60 @@
 install.sh
+
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# pi auth/runtime state
+.pi/agent/auth.json
+.pi/agent/run-history.jsonl
+.pi/agent/sessions/**
+.pi/agent/skills/**/__pycache__/**
+.pi/agent/skills/**/*.pyc
+.pi/agent/skills/**/tests/**
+
+# Claude auth/runtime state
+.claude.json
+.claude/.credentials.json
+.claude/.last-cleanup
+.claude/backups/**
+.claude/cache/**
+.claude/credentials.json
+.claude/downloads/**
+.claude/file-history/**
+.claude/history.jsonl
+.claude/mcp-needs-auth-cache.json
+.claude/paste-cache/**
+.claude/plugins/cache/**
+.claude/plugins/marketplaces/**
+.claude/plugins/plugin-catalog-cache.json
+.claude/plugins/**/.usage-cache.json
+.claude/projects/**
+.claude/session-env/**
+.claude/sessions/**
+.claude/shell-snapshots/**
+.claude/telemetry/**
+
+# Codex auth/runtime/cache state
+.codex/*.log
+.codex/.tmp/**
+.codex/archived_sessions/**
+.codex/auth.json
+.codex/cache/**
+.codex/history.jsonl
+.codex/log/**
+.codex/logs/**
+.codex/sessions/**
+.codex/tmp/**
+
+# OpenCode auth/runtime/cache state
+.cache/opencode/**
+.config/opencode/node_modules/**
+.local/share/opencode/auth.json
+.local/share/opencode/log/**
+.local/share/opencode/opencode.db
+.local/share/opencode/opencode.db-shm
+.local/share/opencode/opencode.db-wal
+.local/share/opencode/repos/**
+.local/share/opencode/snapshot/**
+.local/share/opencode/storage/**
+

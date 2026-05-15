@@ -1,0 +1,26 @@
+{
+  "claude-plugins-official": {
+    "source": {
+      "source": "github",
+      "repo": "anthropics/claude-plugins-official"
+    },
+    "installLocation": "/Users/david/.claude/plugins/marketplaces/claude-plugins-official",
+    "lastUpdated": "2026-05-15T15:03:24.238Z"
+  },
+  "claude-hud": {
+    "source": {
+      "source": "github",
+      "repo": "jarrodwatts/claude-hud"
+    },
+    "installLocation": "/Users/david/.claude/plugins/marketplaces/claude-hud",
+    "lastUpdated": "2026-04-25T17:04:49.890Z"
+  },
+  "ui-ux-pro-max-skill": {
+    "source": {
+      "source": "github",
+      "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+    },
+    "installLocation": "/Users/david/.claude/plugins/marketplaces/ui-ux-pro-max-skill",
+    "lastUpdated": "2026-04-25T17:07:07.498Z"
+  }
+}

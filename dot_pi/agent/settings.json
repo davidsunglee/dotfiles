@@ -1,0 +1,29 @@
+{
+  "lastChangelogVersion": "0.74.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "xhigh",
+  "enabledModels": [
+    "anthropic/claude-opus-4-7",
+    "anthropic/claude-sonnet-4-6",
+    "anthropic/claude-haiku-4-5",
+    "openai-codex/gpt-5.5",
+    "openai-codex/gpt-5.4",
+    "openai-codex/gpt-5.4-mini"
+  ],
+  "extensions": [
+    "./extensions/env.ts"
+  ],
+  "packages": [
+    "~/Code/pi-interactive-subagent",
+    "npm:pi-ghostty",
+    "npm:pi-web-access",
+    "npm:@aliou/pi-processes"
+  ],
+  "autocompleteMaxVisible": 10,
+  "editorPaddingX": 1,
+  "theme": "nord",
+  "warnings": {
+    "anthropicExtraUsage": false
+  }
+}
