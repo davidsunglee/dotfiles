@@ -1,10 +1,25 @@
+# ----- zsh behavior -----
+setopt PROMPT_SUBST
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+
+HISTFILE="${ZDOTDIR:-$HOME}/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+
 # ----- prompt -----
-autoload -Uz vcs_info
-precmd() { vcs_info }
+autoload -Uz vcs_info add-zsh-hook
 
 zstyle ':vcs_info:git:*' formats '%b '
 
-setopt PROMPT_SUBST
+_update_vcs_info() {
+  vcs_info
+}
+add-zsh-hook precmd _update_vcs_info
+
 PROMPT='%F{green}%*%f %F{blue}%~%f %F{red}${vcs_info_msg_0_}%f$ '
 
 # ----- ctrl-arrow word movement -----
@@ -12,62 +27,74 @@ bindkey '^[[1;5D' backward-word
 bindkey '^[[1;5C' forward-word
 
 # ----- homebrew -----
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if command -v brew >/dev/null 2>&1; then
+  eval "$(brew shellenv)"
+elif [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# ----- completions -----
+if [[ -d "$HOME/.docker/completions" ]]; then
+  fpath=("$HOME/.docker/completions" $fpath)
+fi
+
+autoload -Uz compinit
+compinit
 
 # ----- fzf -----
-source <(fzf --zsh)
-#eval "$(fzf --zsh)"
+if command -v fzf >/dev/null 2>&1; then
+  if fzf --zsh >/dev/null 2>&1; then
+    # fzf's generated zsh integration may warn while restoring the read-only zle option.
+    # Filter that known harmless warning while preserving any other stderr output.
+    source <(fzf --zsh) 2> >(grep -v "can't change option: zle" >&2)
+  else
+    # Fallback for older distro-packaged fzf.
+    [[ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]] && source /usr/share/doc/fzf/examples/key-bindings.zsh
+    [[ -f /usr/share/doc/fzf/examples/completion.zsh ]] && source /usr/share/doc/fzf/examples/completion.zsh
+  fi
+fi
 
-# use fd instead of fzf
+if command -v fd >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
 
-export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+  _fzf_compgen_path() {
+    fd --hidden --exclude .git . "$1"
+  }
 
-# use fd (https://github.com/sharkdp/fd) for listing path candidates
-# - first argument to the function ($1) is the base path to start traversal
-# - see source code (completion.{bash,zsh}) for the details
+  _fzf_compgen_dir() {
+    fd --type=d --hidden --exclude .git . "$1"
+  }
+fi
 
-_fzf_compgen_path() {
-  fd --hidden --exclude .git . "$1"
-}
+if [[ -f "$HOME/.fzf-git.sh" ]]; then
+  source "$HOME/.fzf-git.sh"
+fi
 
-# use fd to generate the list for directory completion
+if command -v bat >/dev/null 2>&1 && command -v eza >/dev/null 2>&1; then
+  show_file_or_dir_preview='if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi'
 
-_fzf_compgen_dir() {
-  fd --type=d --hidden --exclude .git . "$1"
-}
+  export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
+  export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
-# add git integration
+  _fzf_comprun() {
+    local command=$1
+    shift
 
-source ~/.fzf-git.sh
+    case "$command" in
+      cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+      export|unset) fzf --preview "eval 'echo $'{}" "$@" ;;
+      ssh)          fzf --preview 'command -v dig >/dev/null 2>&1 && dig {}' "$@" ;;
+      *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
+    esac
+  }
+fi
 
-# use bat and eza for previews
-
-show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi"
-
-export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
-export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
-
-# customize fzf options via _fzf_comprun function
-# - first argument to the function is the name of the command
-# - be sure to pass the rest of the arguments to fzf
-_fzf_comprun() {
-  local command=$1
-  shift
-
-  case "$command" in
-    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
-    export|unset) fzf --preview "eval 'echo $'{}" "$@" ;;
-    ssh)          fzf --preview 'dig {}' "$@" ;;
-    *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
-  esac
-}
-
-# setup fzf theme
-
-#tokyonight-moon
-export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+# Tokyo Night Moon-ish fzf theme.
+export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:-} \
   --highlight-line \
   --info=inline-right \
   --ansi \
@@ -95,21 +122,20 @@ export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
 export BAT_THEME=OneHalfDark
 
 # ----- eza -----
-alias ls="eza --color=always --long --git --no-filesize --icons=always --no-user"
+if command -v eza >/dev/null 2>&1; then
+  alias ll='eza --color=always --long --git --no-filesize --icons=auto --no-user'
+  alias la='eza --color=always --long --all --git --no-filesize --icons=auto --no-user'
+  alias lt='eza --tree --level=2 --color=always --icons=auto'
+fi
 
 # ----- zoxide -----
-if [[ "$CLAUDECODE" != "1" ]]; then
+if command -v zoxide >/dev/null 2>&1 && [[ "${CLAUDECODE:-}" != "1" ]]; then
   eval "$(zoxide init zsh)"
-  alias cd="z"
 fi
 
 # ----- zsh-autosuggestions -----
-source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-# ----- docker -----
-fpath=(/Users/david/.docker/completions $fpath)
-autoload -Uz compinit
-compinit
-
-# ----- antigravity -----
-export PATH="/Users/david/.antigravity/antigravity/bin:$PATH"
+if [[ -n "${HOMEBREW_PREFIX:-}" && -f "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+elif [[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
