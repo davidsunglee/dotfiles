@@ -25,6 +25,8 @@ install.sh
 .claude/mcp-needs-auth-cache.json
 .claude/paste-cache/**
 .claude/plugins/cache/**
+.claude/plugins/installed_plugins.json
+.claude/plugins/known_marketplaces.json
 .claude/plugins/marketplaces/**
 .claude/plugins/plugin-catalog-cache.json
 .claude/plugins/**/.usage-cache.json
