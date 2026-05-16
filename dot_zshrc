@@ -40,8 +40,7 @@ if [[ -d "$HOME/.docker/completions" ]]; then
   fpath=("$HOME/.docker/completions" $fpath)
 fi
 
-autoload -Uz compinit
-compinit
+autoload -Uz compinit && compinit -u
 
 # ----- fzf -----
 if command -v fzf >/dev/null 2>&1; then
