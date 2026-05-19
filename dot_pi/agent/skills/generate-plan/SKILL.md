@@ -61,6 +61,7 @@ On non-zero exit, surface its stderr output byte-equal (canonical Templates (1)�
    - `{WORKING_DIR}` — absolute path to cwd
    - `{OUTPUT_PATH}` — absolute path of the form `<working-dir>/docs/plans/yyyy-MM-dd-<short-description>.md` (substitute `{WORKING_DIR}` from above to produce a fully-resolved absolute path before filling the prompt; Step 3.4's `--expected-path` validation and the planner prompt's byte-equal `PLAN_ARTIFACT: {OUTPUT_PATH}` emission both require this to be absolute).
      - For **file inputs**, derive `<short-description>` from the **input filename** (basename without extension, e.g., `docs/specs/reduce-context.md` → `reduce-context`). Do NOT derive it from the document body — the body is not loaded into the orchestrator prompt.
+       - **Date-prefix normalization (required).** If the basename already starts with a `YYYY-MM-DD-` prefix (regex `^\d{4}-\d{2}-\d{2}-`), strip that leading prefix before applying today's date. For example, a spec created yesterday at `docs/specs/2026-05-18-reduce-context.md` becomes `<short-description> = reduce-context`, and today's plan path becomes `docs/plans/2026-05-19-reduce-context.md` — NOT `docs/plans/2026-05-19-2026-05-18-reduce-context.md`. Basenames that do not begin with a `YYYY-MM-DD-` prefix are used as-is (e.g., `reduce-context.md` → `reduce-context`).
      - For **todo inputs**, derive from the todo title.
      - For **freeform inputs**, derive from the task text.
    - `{SOURCE_TODO}` — `Source todo: TODO-<id>` when a source todo ID is available — either directly (input was a todo ID) or indirectly (extracted from a file's preamble `Source: TODO-<id>` line during provenance extraction in Step 1). Empty string otherwise.
@@ -114,7 +115,17 @@ Invoke `refine-plan` with these arguments:
 
 Run `agent/skills/refine-plan/scripts/parse-refine-plan-summary.py --summary <path-to-finalMessage-or--for-stdin>` against the `refine-plan` summary returned in Step 4. Display the parsed `status`, `commit`, `plan_path`, and `review_paths` fields to the user. When `structural_only == true`, also display the `STRUCTURAL_ONLY: yes` line.
 
-Then, **only when the parsed `status` is `approved` or `approved_with_concerns`**, offer execute-plan:
+### Step 5a: Executable-plan parseability guardrail
+
+**Only when the parsed `status` is `approved` or `approved_with_concerns`**, validate that the plan file is executable by the same parser `execute-plan` would use before offering it to the user. `refine-plan` Step 9.7 already runs this same check before reporting an approved status, so under normal operation this is defense-in-depth — but `generate-plan` re-runs it locally so the execute-plan offer is gated on a fresh check against the on-disk plan (the plan-refiner may have made further edits during the commit gate, and the summary parsing path is permissive). Reviewers occasionally bless plans whose required-section labels use formatting that the executable-plan parser does not yet accept (e.g., legitimate content but a stray label-variant change); catching that here keeps the offer honest. Run:
+
+```bash
+python3 agent/skills/execute-plan/scripts/extract-plan-tasks.py --plan "<PLAN_PATH from refine-plan summary>" > /dev/null
+```
+
+Plan parsing via `extract-plan-tasks.py` is a sanctioned mechanical activity per [`agent/skills/_shared/orchestrator-verification-boundary.md`](../_shared/orchestrator-verification-boundary.md) — this is parseability validation, not a re-judgment of the plan-refiner's verdict. On non-zero exit, surface the parser's stderr (a JSON `{"errors": [...]}` blob) verbatim to the user, prefix it with `generate-plan: approved plan is not executable —`, and skip the execute-plan offer. Report the refine-plan summary (status, commit, plan_path, review_paths, structural_only) so the user can inspect and re-refine. On exit 0, proceed to the offer below.
+
+Then, **only when the parsed `status` is `approved` or `approved_with_concerns`** and the Step 5a parseability check passed, offer execute-plan:
 
 > Plan written to `<PLAN_PATH>`. Want me to run execute-plan with this plan?
 
