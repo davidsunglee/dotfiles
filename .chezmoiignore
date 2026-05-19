@@ -4,6 +4,9 @@ install.sh
 .DS_Store
 **/.DS_Store
 
+# agent metadata directory
+docs
+
 # pi auth/runtime state
 .pi/agent/auth.json
 .pi/agent/run-history.jsonl
