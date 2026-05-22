@@ -44,30 +44,6 @@
         "matcher": "*"
       }
     ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' working",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ],
-    "PostToolUseFailure": [
-      {
-        "hooks": [
-          {
-            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' working",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ],
     "PreToolUse": [
       {
         "hooks": [
@@ -97,18 +73,6 @@
         "hooks": [
           {
             "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' idle",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' working",
             "timeout": 10,
             "type": "command"
           }

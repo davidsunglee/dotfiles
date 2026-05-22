@@ -12,8 +12,9 @@
 
 theme = "light:Everblush,dark:Vague"
 
-font-family = "CaskaydiaMono Nerd Font Mono"
-font-size = 16
+#font-family = "CaskaydiaMono Nerd Font Mono"
+font-family = "FiraCode Nerd Font Mono"
+font-size = 15
 
 adjust-cell-height = 10%
 
