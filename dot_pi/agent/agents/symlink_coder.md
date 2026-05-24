@@ -1,1 +1,1 @@
-/Users/david/.pi/agent/git/github.com/davidsunglee/pi-flow/packages/pi-flow-core/agents/coder.md
+/Users/david/.pi/agent/npm/node_modules/@aphotic/pi-flow-core/agents/coder.md
