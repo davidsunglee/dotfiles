@@ -14,9 +14,8 @@
   "packages": [
     "npm:pi-web-access",
     "npm:@aliou/pi-processes",
+    "npm:@aphotic/pi-flow",
     "npm:@aphotic/pi-mux-subagents",
-    "npm:@aphotic/pi-flow-core",
-    "npm:@aphotic/pi-flow-ux",
     "npm:@juicesharp/rpiv-todo"
   ],
   "autocompleteMaxVisible": 10,
