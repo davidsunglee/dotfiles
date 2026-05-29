@@ -63,3 +63,15 @@ docs
 .local/share/opencode/snapshot/**
 .local/share/opencode/storage/**
 
+
+# More Codex generated/runtime state
+.codex/.personality_migration
+.codex/goals_*.sqlite*
+.codex/installation_id
+.codex/logs_*.sqlite*
+.codex/memories/**
+.codex/models_cache.json
+.codex/shell_snapshots/**
+.codex/skills/.system/**
+.codex/state_*.sqlite*
+.codex/version.json
