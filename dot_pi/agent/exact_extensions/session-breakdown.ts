@@ -15,8 +15,8 @@
  * - Brightness: selected metric per day (log-scaled)
  */
 
-import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
-import { BorderedLoader } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
+import { BorderedLoader } from "@earendil-works/pi-coding-agent";
 import {
 	Key,
 	matchesKey,
@@ -24,7 +24,7 @@ import {
 	type TUI,
 	truncateToWidth,
 	visibleWidth,
-} from "@mariozechner/pi-tui";
+} from "@earendil-works/pi-tui";
 import os from "node:os";
 import path from "node:path";
 import fs from "node:fs/promises";
@@ -37,73 +37,32 @@ type DowKey = string; // "Mon", "Tue", etc.
 type TodKey = string; // "after-midnight", "morning", "afternoon", "evening", "night"
 type BreakdownView = "model" | "cwd" | "dow" | "tod";
 
-const DOW_NAMES: DowKey[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-const TOD_BUCKETS: { key: TodKey; label: string; from: number; to: number }[] = [
-	{ key: "after-midnight", label: "After midnight (0–5)", from: 0, to: 5 },
-	{ key: "morning", label: "Morning (6–11)", from: 6, to: 11 },
-	{ key: "afternoon", label: "Afternoon (12–16)", from: 12, to: 16 },
-	{ key: "evening", label: "Evening (17–21)", from: 17, to: 21 },
-	{ key: "night", label: "Night (22–23)", from: 22, to: 23 },
-];
-
-const graphemeSegmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
-
-function extractAnsiCodeLocal(str: string, pos: number): { code: string; length: number } | null {
-	if (pos >= str.length || str[pos] !== "\x1b") return null;
-
-	const next = str[pos + 1];
-	if (next === "[") {
-		let j = pos + 2;
-		while (j < str.length && !/[mGKHJ]/.test(str[j]!)) j++;
-		if (j < str.length) return { code: str.substring(pos, j + 1), length: j + 1 - pos };
-		return null;
-	}
-
-	if (next === "]") {
-		let j = pos + 2;
-		while (j < str.length) {
-			if (str[j] === "\x07") return { code: str.substring(pos, j + 1), length: j + 1 - pos };
-			if (str[j] === "\x1b" && str[j + 1] === "\\") return { code: str.substring(pos, j + 2), length: j + 2 - pos };
-			j++;
-		}
-		return null;
-	}
-
-	if (next === "_") {
-		let j = pos + 2;
-		while (j < str.length) {
-			if (str[j] === "\x07") return { code: str.substring(pos, j + 1), length: j + 1 - pos };
-			if (str[j] === "\x1b" && str[j + 1] === "\\") return { code: str.substring(pos, j + 2), length: j + 2 - pos };
-			j++;
-		}
-		return null;
-	}
-
-	return null;
-}
-
-export function sliceByColumnLocal(line: string, startCol: number, length: number, strict = false): string {
+function sliceByColumn(line: string, startCol: number, length: number, strict = false): string {
 	if (length <= 0) return "";
 	const endCol = startCol + length;
+	const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
 	let result = "";
 	let currentCol = 0;
 	let i = 0;
 	let pendingAnsi = "";
 
 	while (i < line.length) {
-		const ansi = extractAnsiCodeLocal(line, i);
-		if (ansi) {
-			if (currentCol >= startCol && currentCol < endCol) result += ansi.code;
-			else if (currentCol < startCol) pendingAnsi += ansi.code;
-			i += ansi.length;
-			continue;
+		if (line[i] === "\x1b") {
+			const match = /^\x1b(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1b\\)|[PX^_][^\x1b]*(?:\x1b\\)|[@-_])/.exec(line.slice(i));
+			if (match) {
+				if (currentCol >= startCol && currentCol < endCol) {
+					result += match[0];
+				} else if (currentCol < startCol) {
+					pendingAnsi += match[0];
+				}
+				i += match[0].length;
+				continue;
+			}
 		}
 
-		let textEnd = i;
-		while (textEnd < line.length && !extractAnsiCodeLocal(line, textEnd)) textEnd++;
-
-		for (const { segment } of graphemeSegmenter.segment(line.slice(i, textEnd))) {
+		const nextAnsi = line.indexOf("\x1b", i);
+		const textEnd = nextAnsi === -1 ? line.length : nextAnsi;
+		for (const { segment } of segmenter.segment(line.slice(i, textEnd))) {
 			const w = visibleWidth(segment);
 			const inRange = currentCol >= startCol && currentCol < endCol;
 			const fits = !strict || currentCol + w <= endCol;
@@ -123,6 +82,16 @@ export function sliceByColumnLocal(line: string, startCol: number, length: numbe
 
 	return result;
 }
+
+const DOW_NAMES: DowKey[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+const TOD_BUCKETS: { key: TodKey; label: string; from: number; to: number }[] = [
+	{ key: "after-midnight", label: "After midnight (0–5)", from: 0, to: 5 },
+	{ key: "morning", label: "Morning (6–11)", from: 6, to: 11 },
+	{ key: "afternoon", label: "Afternoon (12–16)", from: 12, to: 16 },
+	{ key: "evening", label: "Evening (17–21)", from: 17, to: 21 },
+	{ key: "night", label: "Night (22–23)", from: 22, to: 23 },
+];
 
 function todBucketForHour(hour: number): TodKey {
 	for (const b of TOD_BUCKETS) {
@@ -244,7 +213,7 @@ interface BreakdownProgressState {
 function setBorderedLoaderMessage(loader: BorderedLoader, message: string) {
 	// BorderedLoader wraps a (Cancellable)Loader which supports setMessage(),
 	// but it doesn't expose it publicly. Access the inner loader for progress updates.
-	const inner = (loader as any)["loader"];
+	const inner = (loader as any)["loader"]; // eslint-disable-line @typescript-eslint/no-explicit-any
 	if (inner && typeof inner.setMessage === "function") {
 		inner.setMessage(message);
 	}
@@ -293,6 +262,10 @@ function weightedMix(colors: Array<{ color: RGB; weight: number }>): RGB {
 	}
 	if (total <= 0) return EMPTY_CELL_BG;
 	return { r: Math.round(r / total), g: Math.round(g / total), b: Math.round(b / total) };
+}
+
+function ansiBg(rgb: RGB, text: string): string {
+	return `\x1b[48;2;${rgb.r};${rgb.g};${rgb.b}m${text}\x1b[0m`;
 }
 
 function ansiFg(rgb: RGB, text: string): string {
@@ -460,18 +433,19 @@ function extractTokensTotal(usage: any): number {
 		return 0;
 	};
 
+	let total = 0;
 	// direct totals
-	const directTotal =
+	total =
 		readNum(usage?.totalTokens) ||
 		readNum(usage?.total_tokens) ||
 		readNum(usage?.tokens) ||
 		readNum(usage?.tokenCount) ||
 		readNum(usage?.token_count);
-	if (directTotal > 0) return directTotal;
+	if (total > 0) return total;
 
 	// nested tokens object
-	const nestedTotal = readNum(usage?.tokens?.total) || readNum(usage?.tokens?.totalTokens) || readNum(usage?.tokens?.total_tokens);
-	if (nestedTotal > 0) return nestedTotal;
+	total = readNum(usage?.tokens?.total) || readNum(usage?.tokens?.totalTokens) || readNum(usage?.tokens?.total_tokens);
+	if (total > 0) return total;
 
 	// sum of parts
 	const a =
@@ -499,7 +473,7 @@ async function walkSessionFiles(
 	while (stack.length) {
 		if (signal?.aborted) break;
 		const dir = stack.pop()!;
-		let entries: Dirent[];
+		let entries: Dirent[] = [];
 		try {
 			entries = await fs.readdir(dir, { withFileTypes: true });
 		} catch {
@@ -932,11 +906,15 @@ function graphMetricForRange(
 	if (mode === "tokens") {
 		const maxTokens = Math.max(0, ...range.days.map((d) => d.tokens));
 		if (maxTokens > 0) return { kind: "tokens", max: maxTokens, denom: Math.log1p(maxTokens) };
+		// fall back if tokens aren't available
+		mode = "messages";
 	}
 
-	if (mode === "tokens" || mode === "messages") {
+	if (mode === "messages") {
 		const maxMessages = Math.max(0, ...range.days.map((d) => d.messages));
 		if (maxMessages > 0) return { kind: "messages", max: maxMessages, denom: Math.log1p(maxMessages) };
+		// fall back if messages aren't available
+		mode = "sessions";
 	}
 
 	const maxSessions = Math.max(0, ...range.days.map((d) => d.sessions));
@@ -1033,14 +1011,59 @@ function displayModelName(modelKey: string): string {
 	return idx === -1 ? modelKey : modelKey.slice(idx + 1);
 }
 
+function renderLegendItems(modelColors: Map<ModelKey, RGB>, orderedModels: ModelKey[], otherColor: RGB): string[] {
+	const items: string[] = [];
+	for (const mk of orderedModels) {
+		const c = modelColors.get(mk);
+		if (!c) continue;
+		items.push(`${ansiFg(c, "█")} ${displayModelName(mk)}`);
+	}
+	items.push(`${ansiFg(otherColor, "█")} other`);
+	return items;
+}
+
+function fitRight(text: string, width: number): string {
+	if (width <= 0) return "";
+	let w = visibleWidth(text);
+	let t = text;
+	if (w > width) {
+		t = sliceByColumn(t, w - width, width, true);
+		w = visibleWidth(t);
+	}
+	return " ".repeat(Math.max(0, width - w)) + t;
+}
+
+function renderLegendBlock(leftLabel: string, items: string[], width: number): string[] {
+	if (width <= 0) return [];
+	if (items.length === 0) return [truncateToWidth(leftLabel, width)];
+
+	const lines: string[] = [];
+	// First line: label on left, first item right-aligned into remaining space.
+	const leftW = visibleWidth(leftLabel);
+	if (leftW >= width) {
+		lines.push(truncateToWidth(leftLabel, width));
+		// Put all items on their own lines right-aligned.
+		for (const it of items) lines.push(fitRight(it, width));
+		return lines;
+	}
+
+	const remaining = Math.max(0, width - leftW);
+	lines.push(leftLabel + fitRight(items[0], remaining));
+
+	for (let i = 1; i < items.length; i++) {
+		lines.push(fitRight(items[i], width));
+	}
+	return lines;
+}
+
 function renderModelTable(range: RangeAgg, mode: MeasurementMode, maxRows = 8): string[] {
 	// Keep this relatively narrow: model + selected metric + cost + share.
 	const metric = graphMetricForRange(range, mode);
 	const kind = metric.kind;
 
 	let perModel: Map<ModelKey, number>;
-	let total: number;
-	const label = kind;
+	let total = 0;
+	let label = kind;
 
 	if (kind === "tokens") {
 		perModel = range.modelTokens;
@@ -1084,8 +1107,8 @@ function renderCwdTable(range: RangeAgg, mode: MeasurementMode, maxRows = 8): st
 	const kind = metric.kind;
 
 	let perCwd: Map<CwdKey, number>;
-	let total: number;
-	const label = kind;
+	let total = 0;
+	let label = kind;
 
 	if (kind === "tokens") {
 		perCwd = range.cwdTokens;
@@ -1206,7 +1229,7 @@ function renderTodTable(range: RangeAgg, mode: MeasurementMode): string[] {
 	const kind = metric.kind;
 
 	let perTod: Map<TodKey, number>;
-	let total: number;
+	let total = 0;
 
 	if (kind === "tokens") {
 		perTod = range.todTokens;
@@ -1237,6 +1260,22 @@ function renderTodTable(range: RangeAgg, mode: MeasurementMode): string[] {
 	}
 
 	return lines;
+}
+
+function renderLeftRight(left: string, right: string, width: number): string {
+	const leftW = visibleWidth(left);
+	if (width <= 0) return "";
+	if (leftW >= width) return truncateToWidth(left, width);
+
+	const remaining = width - leftW;
+	let rightText = right;
+	const rightW = visibleWidth(rightText);
+	if (rightW > remaining) {
+		// Keep the *rightmost* part visible.
+		rightText = sliceByColumn(rightText, rightW - remaining, remaining, true);
+	}
+	const pad = Math.max(0, remaining - visibleWidth(rightText));
+	return left + " ".repeat(pad) + rightText;
 }
 
 function rangeSummary(range: RangeAgg, days: number, mode: MeasurementMode): string {
@@ -1633,4 +1672,3 @@ export default function sessionBreakdownExtension(pi: ExtensionAPI) {
 		},
 	});
 }
-
