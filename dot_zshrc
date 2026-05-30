@@ -132,7 +132,7 @@ export BAT_THEME=OneHalfDark
 if command -v eza >/dev/null 2>&1; then
   alias ll='eza --color=always --long --git --no-filesize --icons=auto --no-user'
   alias la='eza --color=always --long --all --git --no-filesize --icons=auto --no-user'
-  alias lt='eza --tree --level=2 --color=always --icons=auto'
+  alias lt='eza --tree --level=3 --color=always --icons=auto'
 fi
 
 # ----- zoxide -----
