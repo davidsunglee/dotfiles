@@ -24,5 +24,6 @@
   "theme": "nord",
   "warnings": {
     "anthropicExtraUsage": false
-  }
+  },
+  "quietStartup": true
 }

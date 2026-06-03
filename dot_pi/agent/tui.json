@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "working": {
+    "indicator": "wave"
+  },
+  "header": {
+    "logo": "squared"
+  },
+  "editor": {},
+  "footer": {}
+}

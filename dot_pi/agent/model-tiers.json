@@ -9,6 +9,6 @@
     },
     "dispatch": {
         "anthropic": "claude",
-        "openai-codex": "pi"
+        "openai-codex": "codex"
     }
 }
