@@ -1,54 +1,10 @@
 {
   "hooks": {
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "command": "bash '{{ .chezmoi.homeDir }}/.codex/herdr-agent-state.sh' blocked",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "bash '{{ .chezmoi.homeDir }}/.codex/herdr-agent-state.sh' working",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "hooks": [
           {
-            "command": "bash '{{ .chezmoi.homeDir }}/.codex/herdr-agent-state.sh' idle",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "bash '{{ .chezmoi.homeDir }}/.codex/herdr-agent-state.sh' idle",
-            "timeout": 10,
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "bash '{{ .chezmoi.homeDir }}/.codex/herdr-agent-state.sh' working",
+            "command": "bash '{{ .chezmoi.homeDir }}/.codex/herdr-agent-state.sh' session",
             "timeout": 10,
             "type": "command"
           }
