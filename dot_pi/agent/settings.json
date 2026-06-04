@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.78.0",
+  "lastChangelogVersion": "0.78.1",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
   "defaultThinkingLevel": "xhigh",
@@ -21,9 +21,9 @@
   "autocompleteMaxVisible": 10,
   "editorPaddingX": 1,
   "enableSkillCommands": false,
+  "quietStartup": true,
   "theme": "nord",
   "warnings": {
     "anthropicExtraUsage": false
-  },
-  "quietStartup": true
+  }
 }

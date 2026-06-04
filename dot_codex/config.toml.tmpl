@@ -1,6 +1,9 @@
 [projects."{{ .chezmoi.homeDir }}/Code/pi-config"]
 trust_level = "trusted"
 
+[projects."{{ .chezmoi.homeDir }}/Code/pi-flow"]
+trust_level = "trusted"
+
 [projects."{{ .chezmoi.homeDir }}/Code/pi-mux-subagents"]
 trust_level = "trusted"
 
@@ -16,7 +19,7 @@ trusted_hash = "sha256:852b13f9225c8ae440dd017a3dfb4730b80cdf776019ce368c7ab1058
 trusted_hash = "sha256:0aec00936ff4114704f1ed27a58fab3bdbd13e2963a691ccc6928d46c499e8a0"
 
 [hooks.state."{{ .chezmoi.homeDir }}/.codex/hooks.json:session_start:0:0"]
-trusted_hash = "sha256:eef105a287d2333f08acd9dd1cd86e6af0c743b4785888e71e64b2cd7a4d3c80"
+trusted_hash = "sha256:89ab9fc45a58b555763bb0798a678473f04d06315614c8830262afd69be8702a"
 
 [hooks.state."{{ .chezmoi.homeDir }}/.codex/hooks.json:user_prompt_submit:0:0"]
 trusted_hash = "sha256:15d4f008499dd02b3a5f278b3411e9be47ec9730efae45826849c1bf00d264da"
@@ -26,3 +29,6 @@ trusted_hash = "sha256:1a178fb1964da48bac6eda961ee1c9164cc7abf099a8c37149f196b18
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
+
+[notice.model_migrations]
+"gpt-5.4" = "gpt-5.5"
