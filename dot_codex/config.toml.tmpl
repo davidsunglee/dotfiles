@@ -27,6 +27,10 @@ trusted_hash = "sha256:15d4f008499dd02b3a5f278b3411e9be47ec9730efae45826849c1bf0
 [hooks.state."{{ .chezmoi.homeDir }}/.codex/hooks.json:stop:0:0"]
 trusted_hash = "sha256:1a178fb1964da48bac6eda961ee1c9164cc7abf099a8c37149f196b187603a15"
 
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "context-used", "context-window-size"]
+status_line_use_colors = true
+
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 

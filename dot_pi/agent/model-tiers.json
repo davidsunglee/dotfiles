@@ -10,5 +10,10 @@
     "dispatch": {
         "anthropic": "claude",
         "openai-codex": "codex"
+    },
+    "coordinatorDispatch": {
+        "modelChain": [
+          "openai-codex/gpt-5.4"
+        ]
     }
 }

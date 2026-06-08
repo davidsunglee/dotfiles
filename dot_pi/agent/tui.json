@@ -4,7 +4,8 @@
     "indicator": "wave"
   },
   "header": {
-    "logo": "squared"
+    "logo": "squared",
+    "details": "compact"
   },
   "editor": {},
   "footer": {}
