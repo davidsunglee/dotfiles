@@ -1,1 +1,1 @@
-/Users/david/.pi/agent/npm/node_modules/@aphotic/pi-flow-core/agents/coder.md
+/Users/david/Code/pi-flow/.pi/npm/node_modules/@aphotic/pi-flow/node_modules/@aphotic/pi-flow-core/agents/coder.md
