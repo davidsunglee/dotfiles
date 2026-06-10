@@ -3,7 +3,7 @@
 # Layout: model thinking • cwd • context ctx% used ctxSize window
 #   model + thinking level  -> pastel blue
 #   cwd                     -> pastel green
-#   context label + % + window size -> pastel orange
+#   context label + % + window size -> pastel yellow
 #   group separator         -> subtle gray dot
 
 input=$(cat)
@@ -41,6 +41,7 @@ fmt_size() {
 BLUE='\033[38;5;117m'    # pastel blue
 GREEN='\033[38;5;151m'   # pastel green
 ORANGE='\033[38;5;215m'  # pastel orange
+YELLOW='\033[38;5;222m'  # pastel yellow
 GRAY='\033[38;5;244m'    # subtle gray
 RESET='\033[0m'
 DOT=" ${GRAY}•${RESET} "
@@ -65,14 +66,14 @@ fi
 # 3. cwd (pastel green)
 [[ -n "$cwd" ]] && segments+=("${GREEN}${cwd}${RESET}")
 
-# 4+5. context % + window size (pastel orange)
+# 4+5. context % + window size (pastel yellow)
 ctx_seg=""
 [[ -n "$ctx_pct"  && "$ctx_pct"  != "null" ]] && ctx_seg="${ctx_pct}% used"
 size_h="$(fmt_size "$ctx_size")"
 [[ -n "$size_h" ]] && ctx_seg="${ctx_seg:+$ctx_seg }${size_h} window"
 # Lead with the label so it's clear what the numbers refer to
 [[ -n "$ctx_seg" ]] && ctx_seg="context $ctx_seg"
-[[ -n "$ctx_seg" ]] && segments+=("${ORANGE}${ctx_seg}${RESET}")
+[[ -n "$ctx_seg" ]] && segments+=("${YELLOW}${ctx_seg}${RESET}")
 
 # --- join with gray dot ---------------------------------------------------
 out=""
