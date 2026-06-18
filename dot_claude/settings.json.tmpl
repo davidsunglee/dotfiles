@@ -3,6 +3,38 @@
     "commit": "",
     "pr": ""
   },
+  "effortLevel": "xhigh",
+  "enabledPlugins": {
+    "code-simplifier@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "ui-ux-pro-max-skill": {
+      "source": {
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
+        "source": "github"
+      }
+    }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(sysctl -n machdep.cpu.brand_string)",
@@ -12,40 +44,9 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  },
+  "skipDangerousModePermissionPrompt": true,
   "statusLine": {
-    "type": "command",
-    "command": "bash /Users/david/.claude/statusline-command.sh"
-  },
-  "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "swift-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "ui-ux-pro-max-skill": {
-      "source": {
-        "source": "github",
-        "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
-      }
-    }
-  },
-  "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true
+    "command": "bash {{ .chezmoi.homeDir }}/.claude/statusline-command.sh",
+    "type": "command"
+  }
 }
