@@ -3,8 +3,9 @@
     "commit": "",
     "pr": ""
   },
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
   "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
@@ -13,25 +14,18 @@
     "swift-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true
   },
-  "extraKnownMarketplaces": {
-    "ui-ux-pro-max-skill": {
-      "source": {
-        "repo": "nextlevelbuilder/ui-ux-pro-max-skill",
-        "source": "github"
-      }
-    }
-  },
+  "extraKnownMarketplaces": {},
   "hooks": {
     "SessionStart": [
       {
+        "matcher": "*",
         "hooks": [
           {
+            "type": "command",
             "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10,
-            "type": "command"
+            "timeout": 10
           }
-        ],
-        "matcher": "*"
+        ]
       }
     ]
   },
@@ -46,7 +40,7 @@
   },
   "skipDangerousModePermissionPrompt": true,
   "statusLine": {
-    "command": "bash {{ .chezmoi.homeDir }}/.claude/statusline-command.sh",
-    "type": "command"
+    "type": "command",
+    "command": "bash {{ .chezmoi.homeDir }}/.claude/statusline-command.sh"
   }
 }
