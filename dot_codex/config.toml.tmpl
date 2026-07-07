@@ -17,6 +17,9 @@ trust_level = "trusted"
 [projects."{{ .chezmoi.homeDir }}/Code/vigilant-parakeet"]
 trust_level = "trusted"
 
+[projects."{{ .chezmoi.homeDir }}/Code/parallax"]
+trust_level = "trusted"
+
 [features]
 hooks = true
 
@@ -38,7 +41,7 @@ trusted_hash = "sha256:15d4f008499dd02b3a5f278b3411e9be47ec9730efae45826849c1bf0
 trusted_hash = "sha256:1a178fb1964da48bac6eda961ee1c9164cc7abf099a8c37149f196b187603a15"
 
 [tui]
-status_line = ["model-with-reasoning", "current-dir", "context-used", "context-window-size"]
+status_line = ["model-with-reasoning", "current-dir", "context-used", "context-window-size", "thread-title"]
 status_line_use_colors = true
 
 [tui.model_availability_nux]
@@ -48,4 +51,7 @@ status_line_use_colors = true
 "gpt-5.4" = "gpt-5.5"
 
 [plugins."cloudflare@openai-curated"]
+enabled = true
+
+[plugins."linear@openai-curated"]
 enabled = true

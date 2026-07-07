@@ -10,7 +10,6 @@
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true
   },
@@ -39,8 +38,11 @@
     "defaultMode": "acceptEdits"
   },
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "statusLine": {
     "command": "bash {{ .chezmoi.homeDir }}/.claude/statusline-command.sh",
     "type": "command"
-  }
+  },
+  "theme": "dark",
+  "tui": "fullscreen"
 }
