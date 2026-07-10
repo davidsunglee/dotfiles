@@ -3,7 +3,34 @@
     "commit": "",
     "pr": ""
   },
-  "effortLevel": "high",
+  "permissions": {
+    "allow": [
+      "Bash(sysctl -n machdep.cpu.brand_string)",
+      "Bash(sysctl -n hw.memsize)",
+      "Bash(system_profiler SPDisplaysDataType)",
+      "Bash(system_profiler SPHardwareDataType)"
+    ],
+    "defaultMode": "acceptEdits"
+  },
+  "model": "claude-fable-5[1m]",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash {{ .chezmoi.homeDir }}/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
@@ -14,35 +41,9 @@
     "typescript-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {},
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      }
-    ]
-  },
-  "permissions": {
-    "allow": [
-      "Bash(sysctl -n machdep.cpu.brand_string)",
-      "Bash(sysctl -n hw.memsize)",
-      "Bash(system_profiler SPDisplaysDataType)",
-      "Bash(system_profiler SPHardwareDataType)"
-    ],
-    "defaultMode": "acceptEdits"
-  },
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
-  "statusLine": {
-    "command": "bash {{ .chezmoi.homeDir }}/.claude/statusline-command.sh",
-    "type": "command"
-  },
-  "theme": "dark",
-  "tui": "fullscreen"
+  "theme": "dark"
 }

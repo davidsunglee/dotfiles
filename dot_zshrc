@@ -100,33 +100,60 @@ if command -v bat >/dev/null 2>&1 && command -v eza >/dev/null 2>&1; then
   }
 fi
 
-# Tokyo Night Moon-ish fzf theme.
+# Nord
 export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:-} \
   --highlight-line \
   --info=inline-right \
   --ansi \
   --layout=reverse \
   --border=none \
-  --color=bg+:#2d3f76 \
-  --color=bg:#1e2030 \
-  --color=border:#589ed7 \
-  --color=fg:#c8d3f5 \
-  --color=gutter:#1e2030 \
-  --color=header:#ff966c \
-  --color=hl+:#65bcff \
-  --color=hl:#65bcff \
-  --color=info:#545c7e \
-  --color=marker:#ff007c \
-  --color=pointer:#ff007c \
-  --color=prompt:#65bcff \
-  --color=query:#c8d3f5:regular \
-  --color=scrollbar:#589ed7 \
-  --color=separator:#ff966c \
-  --color=spinner:#ff007c \
+  --color fg:#D8DEE9,bg:#2E3440,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C \
+  --color pointer:#BF616A,info:#4C566A,spinner:#4C566A,header:#4C566A,prompt:#81A1C1,marker:#EBCB8B \
 "
 
+# Catppuccin Mocha
+# export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:-} \
+#   --highlight-line \
+#   --info=inline-right \
+#   --ansi \
+#   --layout=reverse \
+#   --border=none \
+#   --color=bg+:#313244,bg:#1E1E2E,spinner:#F5E0DC,hl:#F38BA8 \
+#   --color=fg:#CDD6F4,header:#F38BA8,info:#CBA6F7,pointer:#F5E0DC \
+#   --color=marker:#B4BEFE,fg+:#CDD6F4,prompt:#CBA6F7,hl+:#F38BA8 \
+#   --color=selected-bg:#45475A \
+#   --color=border:#6C7086,label:#CDD6F4 \
+# "
+
+# Tokyo Night Moon
+# export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:-} \
+#   --highlight-line \
+#   --info=inline-right \
+#   --ansi \
+#   --layout=reverse \
+#   --border=none \
+#   --color=bg+:#2d3f76 \
+#   --color=bg:#1e2030 \
+#   --color=border:#589ed7 \
+#   --color=fg:#c8d3f5 \
+#   --color=gutter:#1e2030 \
+#   --color=header:#ff966c \
+#   --color=hl+:#65bcff \
+#   --color=hl:#65bcff \
+#   --color=info:#545c7e \
+#   --color=marker:#ff007c \
+#   --color=pointer:#ff007c \
+#   --color=prompt:#65bcff \
+#   --color=query:#c8d3f5:regular \
+#   --color=scrollbar:#589ed7 \
+#   --color=separator:#ff966c \
+#   --color=spinner:#ff007c \
+# "
+
 # ----- bat -----
-export BAT_THEME=OneHalfDark
+export BAT_THEME='Nord'
+#export BAT_THEME='Catppuccin Mocha'
+#export BAT_THEME='Tokyo Night Moon'
 
 # ----- eza -----
 if command -v eza >/dev/null 2>&1; then

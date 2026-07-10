@@ -1,20 +1,22 @@
 {
-    "modelTiers": {
-        "capable": "anthropic/claude-opus-4-8",
-        "standard": "anthropic/claude-sonnet-4-6",
-        "cheap": "anthropic/claude-haiku-4-5"
-    },
-    "crossProviderModelTiers": {
-        "capable": "openai-codex/gpt-5.5",
-        "standard": "openai-codex/gpt-5.4",
-        "cheap": "openai-codex/gpt-5.4-mini"
-    },
-    "subagentDispatch": {
-        "anthropic": "claude",
-        "openai-codex": "codex"
-    },
-    "coordinatorSubagentDispatch": {
-        "modelChain": ["openai-codex/gpt-5.4"]
-    },
-    "executionPolicy": "unrestricted"
+  "modelTiers": {
+    "capable": "anthropic/claude-opus-4-8",
+    "standard": "anthropic/claude-sonnet-5",
+    "cheap": "anthropic/claude-haiku-4-5"
+  },
+  "crossProviderModelTiers": {
+    "capable": "openai-codex/gpt-5.6-sol",
+    "standard": "openai-codex/gpt-5.6-terra",
+    "cheap": "openai-codex/gpt-5.6-luna"
+  },
+  "subagentDispatch": {
+    "anthropic": "claude",
+    "openai-codex": "codex"
+  },
+  "coordinatorSubagentDispatch": {
+    "modelChain": [
+      "openai-codex/gpt-5.6-terra"
+    ]
+  },
+  "executionPolicy": "unrestricted"
 }
