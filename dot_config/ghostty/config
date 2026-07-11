@@ -10,9 +10,11 @@
 # reloaded while running; some only apply to new windows and others may require
 # a full restart to take effect.
 
-theme = "Nord"
-#theme = "Catppuccin Mocha"
-#theme = "Poimandres"
+# Theme is managed by the unified theme controller (~/.config/theme).
+# It writes a light/dark pair (or a single pinned theme) to theme.conf below,
+# which auto-switches with macOS appearance. Use the `theme` shell command to
+# change slots, then reload config (Cmd+Shift+,) to apply slot changes here.
+config-file = theme.conf
 
 #font-family = "CaskaydiaMono Nerd Font Mono"
 font-family = "FiraCode Nerd Font Mono"

@@ -6,19 +6,12 @@
 onboarding = false
 
 [theme]
-# Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
-#                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
-#                  vesper
+# Managed by ~/.config/theme (unified theme controller): herdr built-ins mapped
+# to the active dark/light slots; auto_switch follows the terminal appearance.
 name = "terminal"
 auto_switch = false
-
-# Override individual color tokens on top of the base theme.
-# Accepts: hex (#rrggbb), named colors, rgb(r,g,b), or panel_bg = "reset"
-# [theme.custom]
-# panel_bg = "reset"
-# accent = "#f5c2e7"
-# red = "#ff6188"
-# green = "#a6e3a1"
+dark_name = "nord"
+light_name = "rose-pine-dawn"
 
 [terminal]
 # Executable used for new interactive panes.

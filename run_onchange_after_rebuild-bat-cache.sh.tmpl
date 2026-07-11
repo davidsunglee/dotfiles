@@ -1,0 +1,14 @@
+#!/bin/sh
+# Rebuild bat's theme cache after the custom .tmTheme files change, so `bat`
+# (and delta, which follows BAT_THEME) can find them. The hashes below make
+# chezmoi re-run this only when a theme actually changes.
+# {{ include "dot_config/bat/themes/poimandres.tmTheme" | sha256sum }}
+# {{ include "dot_config/bat/themes/rose-pine.tmTheme" | sha256sum }}
+# {{ include "dot_config/bat/themes/rose-pine-moon.tmTheme" | sha256sum }}
+# {{ include "dot_config/bat/themes/rose-pine-dawn.tmTheme" | sha256sum }}
+# {{ include "dot_config/bat/themes/tokyonight-night.tmTheme" | sha256sum }}
+# {{ include "dot_config/bat/themes/tokyonight-storm.tmTheme" | sha256sum }}
+# {{ include "dot_config/bat/themes/tokyonight-moon.tmTheme" | sha256sum }}
+# {{ include "dot_config/bat/themes/tokyonight-day.tmTheme" | sha256sum }}
+command -v bat >/dev/null 2>&1 || exit 0
+bat cache --build >/dev/null 2>&1

@@ -1,0 +1,20 @@
+# Managed alongside the unified theme system (~/.config/theme).
+# UI colors use terminal ANSI color *names*, so they follow Ghostty's active
+# palette automatically (like herdr's "terminal" mode). Diffs are piped through
+# delta, which inherits BAT_THEME + DELTA_FEATURES from the shell — matching the
+# active theme and its light/dark mode. Config is read at launch.
+gui:
+  theme:
+    activeBorderColor:
+      - blue
+      - bold
+    inactiveBorderColor:
+      - default
+    selectedLineBgColor:
+      - reverse
+    selectedRangeBgColor:
+      - reverse
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never

@@ -1,0 +1,8 @@
+# Managed alongside the unified theme system (~/.config/theme).
+# hunk's built-in themes are limited (github light/dark + a few others), so it
+# can't take the exact per-theme palette. Instead it follows the terminal
+# background: `auto` queries it at startup and picks github-light-default on a
+# light background, github-dark-default on a dark one. Ghostty's background
+# tracks the active theme, so hunk stays light/dark in tandem at launch.
+# Press `t` inside hunk to pick a different theme at runtime.
+theme = "auto"

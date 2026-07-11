@@ -21,3 +21,7 @@
 [diff]
 	colorMoved = default
 
+[delta "delta-dark"]
+	dark = true
+[delta "delta-light"]
+	light = true

@@ -1,0 +1,5 @@
+# Environment for every zsh (login, interactive, and scripts).
+
+# Use the XDG base-directory config location. Portable across macOS/Linux and
+# relocates tools like lazygit off ~/Library/Application Support into ~/.config.
+export XDG_CONFIG_HOME="$HOME/.config"
