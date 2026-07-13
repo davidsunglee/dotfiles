@@ -1,6 +1,6 @@
 {
   // >>> theme-controller (managed) >>>
-  "theme": "system",
+  "theme": "nord",
   // <<< theme-controller (managed) <<<
   "$schema": "https://opencode.ai/config.json"
 }

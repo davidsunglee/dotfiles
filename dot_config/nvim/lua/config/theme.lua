@@ -25,6 +25,21 @@ M.map = {
   ["tokyonight-storm"]   = { "tokyonight-storm", false },
   ["tokyonight-moon"]    = { "tokyonight-moon", false },
   ["tokyonight-day"]     = { "tokyonight-day", true },
+  -- gruvbox/solarized/everforest: one colorscheme, light/dark via vim.o.background.
+  ["gruvbox-dark"]       = { "gruvbox", false },
+  ["gruvbox-light"]      = { "gruvbox", true },
+  ["solarized-dark"]     = { "solarized", false },
+  ["solarized-light"]    = { "solarized", true },
+  ["one-dark"]           = { "onedark", false },
+  ["one-light"]          = { "onelight", true },
+  ["dracula"]            = { "dracula", false },
+  ["kanagawa-wave"]      = { "kanagawa-wave", false },
+  ["kanagawa-lotus"]     = { "kanagawa-lotus", true },
+  ["ayu-dark"]           = { "ayu-dark", false },
+  ["ayu-mirage"]         = { "ayu-mirage", false },
+  ["ayu-light"]          = { "ayu-light", true },
+  ["everforest-dark"]    = { "everforest", false },
+  ["everforest-light"]   = { "everforest", true },
 }
 
 local appearance = nil -- "dark" | "light", seeded lazily

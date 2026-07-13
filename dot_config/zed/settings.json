@@ -13,7 +13,11 @@
     "rose-pine-theme": true,
     "tokyo-night": true,
     "nord": true,
-    "poimandres": true
+    "poimandres": true,
+    "solarized": true,
+    "dracula": true,
+    "kanagawa-themes": true,
+    "everforest": true
   },
   // <<< theme-controller <<<
   "project_panel": {
@@ -42,7 +46,7 @@
     "diagnostics": false,
     "metrics": false
   },
-  "theme": { "mode": "light", "light": "Rosé Pine Dawn", "dark": "Rosé Pine Dawn" },
+  "theme": { "mode": "dark", "light": "Nord", "dark": "Nord" },
   "icon_theme": "Warm Charmed Icons",
 
   "buffer_font_size": 15,

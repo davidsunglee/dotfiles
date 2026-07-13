@@ -6,5 +6,5 @@
 # terminal bg and fell back to github-dark-default when unanswered).
 # Press `t` inside hunk to preview other themes at runtime.
 # >>> theme-controller (managed) >>>
-theme = "rose-pine-dawn"
+theme = "nord"
 # <<< theme-controller (managed) <<<

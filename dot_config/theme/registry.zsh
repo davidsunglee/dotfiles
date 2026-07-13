@@ -13,6 +13,13 @@ typeset -ga THEME_SLUGS=(
   rose-pine rose-pine-moon rose-pine-dawn
   catppuccin-mocha catppuccin-macchiato catppuccin-frappe catppuccin-latte
   tokyonight-night tokyonight-storm tokyonight-moon tokyonight-day
+  gruvbox-dark gruvbox-light
+  solarized-dark solarized-light
+  one-dark one-light
+  dracula
+  kanagawa-wave kanagawa-lotus
+  ayu-dark ayu-mirage ayu-light
+  everforest-dark everforest-light
 )
 
 # slug -> Ghostty built-in theme name
@@ -30,6 +37,20 @@ typeset -gA THEME_GHOSTTY=(
   tokyonight-storm     "TokyoNight Storm"
   tokyonight-moon      "TokyoNight Moon"
   tokyonight-day       "TokyoNight Day"
+  gruvbox-dark         "Gruvbox Dark"
+  gruvbox-light        "Gruvbox Light"
+  solarized-dark       "iTerm2 Solarized Dark"
+  solarized-light      "iTerm2 Solarized Light"
+  one-dark             "Atom One Dark"
+  one-light            "Atom One Light"
+  dracula              "Dracula"
+  kanagawa-wave        "Kanagawa Wave"
+  kanagawa-lotus       "Kanagawa Lotus"
+  ayu-dark             "Ayu"
+  ayu-mirage           "Ayu Mirage"
+  ayu-light            "Ayu Light"
+  everforest-dark      "Everforest Dark Hard"
+  everforest-light     "Everforest Light Med"
 )
 
 # slug -> bat theme name (custom tmThemes use the slug; built-ins use their name)
@@ -47,9 +68,26 @@ typeset -gA THEME_BAT=(
   tokyonight-storm     tokyonight-storm
   tokyonight-moon      tokyonight-moon
   tokyonight-day       tokyonight-day
+  gruvbox-dark         gruvbox-dark
+  gruvbox-light        gruvbox-light
+  solarized-dark       "Solarized (dark)"
+  solarized-light      "Solarized (light)"
+  one-dark             OneHalfDark
+  one-light            OneHalfLight
+  dracula              Dracula
+  kanagawa-wave        gruvbox-dark          # no bat kanagawa; nearest warm-dark; tune (author tmTheme)
+  kanagawa-lotus       gruvbox-light         # nearest light; tune
+  ayu-dark             TwoDark               # no bat ayu; nearest dark; tune
+  ayu-mirage           TwoDark               # nearest; tune
+  ayu-light            OneHalfLight          # nearest light; tune
+  everforest-dark      gruvbox-dark          # no bat everforest; nearest; tune
+  everforest-light     gruvbox-light         # nearest light; tune
 )
 
-# slug -> Neovim colorscheme name (all plugins expose these names directly)
+# slug -> Neovim colorscheme name (all plugins expose these names directly).
+# gruvbox/solarized/everforest use ONE colorscheme name for both light+dark;
+# the light/dark split comes from vim.o.background (set by config/theme.lua from
+# THEME_ISLIGHT). Plugin specs live in lua/plugins/<family>.lua.
 typeset -gA THEME_NVIM=(
   poimandres           poimandres
   nord                 nord
@@ -64,6 +102,20 @@ typeset -gA THEME_NVIM=(
   tokyonight-storm     tokyonight-storm
   tokyonight-moon      tokyonight-moon
   tokyonight-day       tokyonight-day
+  gruvbox-dark         gruvbox
+  gruvbox-light        gruvbox
+  solarized-dark       solarized
+  solarized-light      solarized
+  one-dark             onedark
+  one-light            onelight
+  dracula              dracula
+  kanagawa-wave        kanagawa-wave
+  kanagawa-lotus       kanagawa-lotus
+  ayu-dark             ayu-dark
+  ayu-mirage           ayu-mirage
+  ayu-light            ayu-light
+  everforest-dark      everforest
+  everforest-light     everforest
 )
 
 # Which slugs are light backgrounds (everything else is treated as dark)
@@ -71,6 +123,12 @@ typeset -gA THEME_ISLIGHT=(
   rose-pine-dawn   1
   catppuccin-latte 1
   tokyonight-day   1
+  gruvbox-light    1
+  solarized-light  1
+  one-light        1
+  kanagawa-lotus   1
+  ayu-light        1
+  everforest-light 1
 )
 
 # slug -> herdr built-in theme (`~/.config/herdr/config.toml` [theme] block).
@@ -81,7 +139,7 @@ typeset -gA THEME_ISLIGHT=(
 #   catppuccin-latte, tokyo-night, tokyo-night-day, dracula, gruvbox,
 #   gruvbox-light, one-dark, one-light, solarized, solarized-light,
 #   kanagawa, kanagawa-lotus, vesper. (No poimandres; catppuccin & tokyonight
-#   each collapse to a single flavor; no rose-pine-moon.)
+#   each collapse to a single flavor; no rose-pine-moon; no ayu/everforest.)
 typeset -gA THEME_HERDR=(
   poimandres           terminal          # no herdr poimandres -> Ghostty ANSI is the best match; tune
   nord                 nord              # exact
@@ -96,17 +154,32 @@ typeset -gA THEME_HERDR=(
   tokyonight-storm     terminal          # -> terminal
   tokyonight-moon      terminal          # -> terminal
   tokyonight-day       tokyo-night-day   # exact
+  gruvbox-dark         gruvbox           # exact
+  gruvbox-light        gruvbox-light     # exact
+  solarized-dark       solarized         # exact
+  solarized-light      solarized-light   # exact
+  one-dark             one-dark          # exact
+  one-light            one-light         # exact
+  dracula              dracula           # exact
+  kanagawa-wave        kanagawa          # exact
+  kanagawa-lotus       kanagawa-lotus    # exact
+  ayu-dark             terminal          # no herdr ayu -> terminal; tune
+  ayu-mirage           terminal          # -> terminal
+  ayu-light            terminal          # -> terminal (light via Ghostty ANSI)
+  everforest-dark      terminal          # no herdr everforest -> terminal; tune
+  everforest-light     terminal          # -> terminal
 )
 
-# slug -> hunk built-in theme (`~/.config/hunk/config.toml` theme key).
-# hunk (v0.17+) ships EXACT built-ins for almost every slug, so this is nearly
-# 1:1. Replaces the old `theme = "auto"` (which OSC-queried the terminal bg and,
-# when unanswered, fell back to github-dark-default -- the "stuck default" bug).
-# hunk built-ins incl.: poimandres, nord, rose-pine{,-moon,-dawn},
+# slug -> hunk theme. hunk's ids are the BUNDLED SHIKI THEME IDS (verified from
+# hunk's src: HUNK_DIFF_THEME_NAMES = BUNDLED_SHIKI_THEME_IDS). Map to an exact
+# shiki id where one exists; an unknown id makes hunk fall back to
+# github-dark-default (the "stuck default" bug), so never guess.
+# Relevant shiki ids: poimandres, nord, rose-pine{,-moon,-dawn},
 #   catppuccin-{mocha,macchiato,frappe,latte}, tokyo-night, dracula{,-soft},
-#   gruvbox-*, solarized-{dark,light}, one-dark-pro, one-light, monokai, ayu-*,
-#   github-{dark,light}-* , everforest-*, night-owl{,-light}, vitesse-*, etc.
-#   (No tokyo-night light/day variant.) Run `t` inside hunk to preview others.
+#   gruvbox-{dark,light}-{hard,medium,soft}, solarized-{dark,light},
+#   one-dark-pro, one-light, monokai, ayu-dark, kanagawa-{wave,dragon,lotus},
+#   everforest-{dark,light}, github-{dark,light}-default, night-owl, vesper.
+#   (No ayu-mirage/ayu-light, no tokyo light -> those fall back below.)
 typeset -gA THEME_HUNK=(
   poimandres           poimandres            # exact
   nord                 nord                  # exact
@@ -120,12 +193,28 @@ typeset -gA THEME_HUNK=(
   tokyonight-night     tokyo-night           # hunk has a single tokyo-night
   tokyonight-storm     tokyo-night           # collapses to tokyo-night
   tokyonight-moon      tokyo-night           # collapses to tokyo-night
-  tokyonight-day       github-light-default  # no tokyo light in hunk; tune (one-light/solarized-light)
+  tokyonight-day       github-light-default  # no tokyo light in shiki; tune (one-light/solarized-light)
+  gruvbox-dark         gruvbox-dark-medium   # shiki (no plain gruvbox-dark)
+  gruvbox-light        gruvbox-light-medium  # shiki
+  solarized-dark       solarized-dark        # shiki
+  solarized-light      solarized-light       # shiki
+  one-dark             one-dark-pro          # shiki
+  one-light            one-light             # shiki
+  dracula              dracula               # shiki
+  kanagawa-wave        kanagawa-wave         # shiki
+  kanagawa-lotus       kanagawa-lotus        # shiki
+  ayu-dark             ayu-dark              # shiki
+  ayu-mirage           ayu-dark              # no shiki ayu-mirage; nearest; tune
+  ayu-light            github-light-default  # no shiki ayu-light; tune
+  everforest-dark      everforest-dark       # shiki
+  everforest-light     everforest-light      # shiki
 )
 
 # slug -> vivid theme (generates LS_COLORS; drives eza, ls, fd, and the fzf file
-# previews). vivid 0.11 ships exact built-ins for 12/13 slugs; only poimandres
-# has no vivid theme, so it borrows tokyonight-night's palette (tune candidate).
+# previews). vivid 0.11 built-ins: nord, rose-pine{,-moon,-dawn}, catppuccin-*,
+# tokyonight-*, gruvbox-{dark,light}(+hard/soft), solarized-{dark,light},
+# one-dark, one-light, dracula, ayu, molokai, snazzy, zenburn, iceberg-*, etc.
+# (No poimandres/kanagawa/everforest -> nearest; tune.)
 typeset -gA THEME_VIVID=(
   poimandres           tokyonight-night      # no vivid poimandres -> nearest; tune
   nord                 nord
@@ -140,12 +229,28 @@ typeset -gA THEME_VIVID=(
   tokyonight-storm     tokyonight-storm
   tokyonight-moon      tokyonight-moon
   tokyonight-day       tokyonight-day
+  gruvbox-dark         gruvbox-dark
+  gruvbox-light        gruvbox-light
+  solarized-dark       solarized-dark
+  solarized-light      solarized-light
+  one-dark             one-dark
+  one-light            one-light
+  dracula              dracula
+  kanagawa-wave        zenburn               # no vivid kanagawa; nearest muted-dark; tune
+  kanagawa-lotus       gruvbox-light         # nearest light; tune
+  ayu-dark             ayu
+  ayu-mirage           ayu                   # vivid has a single ayu
+  ayu-light            gruvbox-light         # vivid ayu is dark; nearest light; tune
+  everforest-dark      gruvbox-dark          # no vivid everforest; nearest; tune
+  everforest-light     gruvbox-light         # nearest light; tune
 )
 
 # slug -> btop theme name (the color_theme value = a .theme file stem in
 # ~/.config/btop/themes/, or a btop built-in). Catppuccin/Rose Pine/TokyoNight
 # .theme files were fetched from their official repos; nord + tokyo-night ship
-# with btop. poimandres has no btop theme anywhere -> nearest built-in tokyo-night.
+# with btop, as do gruvbox_*, solarized_*, onedark, dracula, kanagawa-*, ayu,
+# everforest-*-medium. poimandres has none -> tokyo-night. Light gaps (one-light,
+# ayu-light) -> nearest neutral-light "paper"; ayu-mirage -> "ayu".
 typeset -gA THEME_BTOP=(
   poimandres           tokyo-night           # built-in nearest; no poimandres .theme exists
   nord                 nord                  # btop built-in
@@ -160,13 +265,28 @@ typeset -gA THEME_BTOP=(
   tokyonight-storm     tokyonight_storm
   tokyonight-moon      tokyonight_moon
   tokyonight-day       tokyonight_day
+  gruvbox-dark         gruvbox_dark          # btop built-in
+  gruvbox-light        gruvbox_light         # btop built-in
+  solarized-dark       solarized_dark        # btop built-in
+  solarized-light      solarized_light       # btop built-in
+  one-dark             onedark               # btop built-in
+  one-light            paper                 # no btop one-light; nearest neutral-light; tune
+  dracula              dracula               # btop built-in
+  kanagawa-wave        kanagawa-wave         # btop built-in
+  kanagawa-lotus       kanagawa-lotus        # btop built-in
+  ayu-dark             ayu                   # btop built-in
+  ayu-mirage           ayu                   # no btop ayu-mirage; use ayu; tune
+  ayu-light            paper                 # no btop ayu-light; nearest neutral-light; tune
+  everforest-dark      everforest-dark-medium
+  everforest-light     everforest-light-medium
 )
 
 # slug -> Zed theme display name (EXACT strings from each theme extension -- the
-# accents matter, or Zed silently keeps the previous theme). Extensions install
-# via the auto_install_extensions block in settings.json: catppuccin,
-# rose-pine-theme, tokyo-night, nord, poimandres. Zed hot-reloads settings.json
-# and flips light/dark natively when theme.mode = "system".
+# accents/qualifiers matter, or Zed silently keeps the previous theme). Bundled:
+# Gruvbox, One, Ayu. Extensions (auto_install_extensions in settings.json):
+# catppuccin, rose-pine-theme, tokyo-night, nord, poimandres, solarized,
+# dracula, kanagawa-themes, everforest. Zed hot-reloads settings.json and flips
+# light/dark natively when theme.mode = "system".
 typeset -gA THEME_ZED=(
   poimandres           "poimandres"          # mshaugh/poimandres.zed (lowercase name)
   nord                 "Nord"
@@ -181,14 +301,29 @@ typeset -gA THEME_ZED=(
   tokyonight-storm     "Tokyo Night Storm"
   tokyonight-moon      "Tokyo Night Moon"
   tokyonight-day       "Tokyo Night Light"
+  gruvbox-dark         "Gruvbox Dark"        # bundled
+  gruvbox-light        "Gruvbox Light"       # bundled
+  solarized-dark       "Solarized Dark"      # solarized ext (verify name in Zed picker)
+  solarized-light      "Solarized Light"     # solarized ext
+  one-dark             "One Dark"            # bundled
+  one-light            "One Light"           # bundled
+  dracula              "Dracula"             # dracula ext
+  kanagawa-wave        "Kanagawa Wave"       # kanagawa-themes ext
+  kanagawa-lotus       "Kanagawa Lotus"      # kanagawa-themes ext
+  ayu-dark             "Ayu Dark"            # bundled
+  ayu-mirage           "Ayu Mirage"          # bundled
+  ayu-light            "Ayu Light"           # bundled
+  everforest-dark      "Everforest Dark Medium (regular)"   # everforest ext
+  everforest-light     "Everforest Light Medium (regular)"  # everforest ext
 )
 
 # slug -> opencode theme. opencode built-ins are coarse (tokyonight/catppuccin/
-# nord/one-dark collapse flavors), so map exact where a built-in exists and fall
-# back to "system" (opencode's terminal-ANSI-adaptive theme -- the herdr
-# `terminal` equivalent; since Ghostty's ANSI is themed per-slug, it tracks well).
-# poimandres is a custom JSON already in ~/.config/opencode/themes/. Drop more
-# custom JSONs there to tighten the `system` fallbacks over time.
+# nord/one-dark/gruvbox/kanagawa/ayu/everforest, all dark), so map exact where a
+# built-in exists and fall back to "system" (opencode's terminal-ANSI-adaptive
+# theme -- the herdr `terminal` equivalent; since Ghostty's ANSI is themed
+# per-slug, it tracks well). Every LIGHT slug -> system (no light built-ins).
+# poimandres is a custom JSON in ~/.config/opencode/themes/. Drop more custom
+# JSONs there to tighten the `system` fallbacks over time.
 typeset -gA THEME_OPENCODE=(
   poimandres           poimandres            # custom JSON already installed
   nord                 nord
@@ -203,4 +338,18 @@ typeset -gA THEME_OPENCODE=(
   tokyonight-storm     tokyonight
   tokyonight-moon      tokyonight
   tokyonight-day       system                # no tokyo light built-in; tune
+  gruvbox-dark         gruvbox
+  gruvbox-light        system                # opencode gruvbox is dark; light -> system
+  solarized-dark       system                # no opencode solarized; tune (custom JSON)
+  solarized-light      system
+  one-dark             one-dark
+  one-light            system                # one-dark is dark; light -> system
+  dracula              system                # no opencode dracula; tune (custom JSON)
+  kanagawa-wave        kanagawa
+  kanagawa-lotus       system                # kanagawa built-in is dark; lotus -> system
+  ayu-dark             ayu
+  ayu-mirage           ayu
+  ayu-light            system                # ayu light -> system
+  everforest-dark      everforest
+  everforest-light     system                # everforest built-in is dark; light -> system
 )
