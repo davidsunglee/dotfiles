@@ -1,8 +1,10 @@
-# Managed alongside the unified theme system (~/.config/theme).
-# hunk's built-in themes are limited (github light/dark + a few others), so it
-# can't take the exact per-theme palette. Instead it follows the terminal
-# background: `auto` queries it at startup and picks github-light-default on a
-# light background, github-dark-default on a dark one. Ghostty's background
-# tracks the active theme, so hunk stays light/dark in tandem at launch.
-# Press `t` inside hunk to pick a different theme at runtime.
-theme = "auto"
+# Managed by ~/.config/theme (unified theme controller). The theme line below is
+# regenerated from the THEME_HUNK map in ~/.config/theme/registry.zsh (mapped
+# from the active slug) — edit the map, not this line. Keep the fences intact.
+# hunk v0.17+ has exact built-ins for nearly every slug, so this matches the
+# real palette instead of the old `theme = "auto"` (which OSC-queried the
+# terminal bg and fell back to github-dark-default when unanswered).
+# Press `t` inside hunk to preview other themes at runtime.
+# >>> theme-controller (managed) >>>
+theme = "rose-pine-dawn"
+# <<< theme-controller (managed) <<<

@@ -5,13 +5,14 @@
 # Missing also shows onboarding; set false after you've chosen.
 onboarding = false
 
+# Managed by ~/.config/theme (unified theme controller). The [theme] block below
+# is regenerated from the THEME_HERDR map in ~/.config/theme/registry.zsh — edit
+# the map, not these lines. Keep the fence comments intact.
+# >>> theme-controller (managed) >>>
 [theme]
-# Managed by ~/.config/theme (unified theme controller): herdr built-ins mapped
-# to the active dark/light slots; auto_switch follows the terminal appearance.
-name = "terminal"
+name = "rose-pine-dawn"
 auto_switch = false
-dark_name = "nord"
-light_name = "rose-pine-dawn"
+# <<< theme-controller (managed) <<<
 
 [terminal]
 # Executable used for new interactive panes.
