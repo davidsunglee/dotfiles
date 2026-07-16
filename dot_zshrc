@@ -24,14 +24,14 @@ autoload -Uz vcs_info add-zsh-hook
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' unstagedstr '*'
 zstyle ':vcs_info:git:*' stagedstr  '+'
-zstyle ':vcs_info:git:*' formats ' %F{8}·%f %F{magenta}%b%u%c%f'
+zstyle ':vcs_info:git:*' formats ' %F{8}»%f %F{magenta}%b%u%c%f'
 
 _update_vcs_info() {
   vcs_info
 }
 add-zsh-hook precmd _update_vcs_info
 
-PROMPT='%F{blue}%m%f %F{8}·%f %F{green}%~%f${vcs_info_msg_0_}
+PROMPT='%F{blue}${(L)HOST%%.*}%f %F{8}»%f %F{green}%~%f${vcs_info_msg_0_}
 %F{cyan}❯%f '
 
 # ----- ctrl-arrow word movement -----
