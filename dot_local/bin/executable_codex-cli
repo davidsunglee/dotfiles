@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Run Codex runtime commands with the managed CLI profile.
+exec codex --profile cli "$@"
