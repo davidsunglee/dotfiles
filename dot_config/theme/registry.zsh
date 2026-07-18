@@ -20,6 +20,12 @@ typeset -ga THEME_SLUGS=(
   kanagawa-wave kanagawa-lotus
   ayu-dark ayu-mirage ayu-light
   everforest-dark everforest-light
+  night-owl night-owl-light
+  monokai-pro
+  github-dark github-light
+  vesper
+  melange-dark melange-light
+  synthwave-84
 )
 
 # slug -> Ghostty built-in theme name
@@ -51,6 +57,15 @@ typeset -gA THEME_GHOSTTY=(
   ayu-light            "Ayu Light"
   everforest-dark      "Everforest Dark Hard"
   everforest-light     "Everforest Light Med"
+  night-owl            "Night Owl"
+  night-owl-light      "Light Owl"              # Ghostty's Night Owl Light (bg #fbfbfb)
+  monokai-pro          "Monokai Pro"
+  github-dark          "GitHub Dark Default"
+  github-light         "GitHub Light Default"
+  vesper               "Vesper"
+  melange-dark         "Melange Dark"
+  melange-light        "Melange Light"
+  synthwave-84         "Synthwave Everything"   # truest match to Robb Owen's Synthwave '84 palette
 )
 
 # slug -> bat theme name (custom tmThemes use the slug; built-ins use their name)
@@ -82,6 +97,15 @@ typeset -gA THEME_BAT=(
   ayu-light            OneHalfLight          # nearest light; tune
   everforest-dark      gruvbox-dark          # no bat everforest; nearest; tune
   everforest-light     gruvbox-light         # nearest light; tune
+  night-owl            night-owl             # custom tmTheme in bat/themes/
+  night-owl-light      night-owl-light       # custom tmTheme in bat/themes/
+  monokai-pro          "Monokai Extended"    # bat built-in (close to Monokai Pro)
+  github-dark          github-dark           # custom tmTheme in bat/themes/
+  github-light         "GitHub"              # bat built-in (light GitHub)
+  vesper               vesper                # custom tmTheme in bat/themes/
+  melange-dark         melange-dark          # custom tmTheme in bat/themes/
+  melange-light        melange-light         # custom tmTheme in bat/themes/
+  synthwave-84         synthwave-84          # custom tmTheme in bat/themes/
 )
 
 # slug -> Neovim colorscheme name (all plugins expose these names directly).
@@ -116,6 +140,15 @@ typeset -gA THEME_NVIM=(
   ayu-light            ayu-light
   everforest-dark      everforest
   everforest-light     everforest
+  night-owl            night-owl             # oxfist/night-owl.nvim (dark only)
+  night-owl-light      onelight              # no NO Light nvim plugin; nearest light; tune
+  monokai-pro          monokai-pro           # loctvl842/monokai-pro.nvim (pro filter)
+  github-dark          github_dark_default   # projekt0n/github-nvim-theme
+  github-light         github_light_default  # projekt0n/github-nvim-theme
+  vesper               vesper                # datsfilipe/vesper.nvim (dark only)
+  melange-dark         melange               # savq/melange-nvim (bg drives variant)
+  melange-light        melange               # savq/melange-nvim (bg drives variant)
+  synthwave-84         synthwave84           # LunarVim/synthwave84.nvim (dark only)
 )
 
 # Which slugs are light backgrounds (everything else is treated as dark)
@@ -129,6 +162,9 @@ typeset -gA THEME_ISLIGHT=(
   kanagawa-lotus   1
   ayu-light        1
   everforest-light 1
+  night-owl-light  1
+  github-light     1
+  melange-light    1
 )
 
 # slug -> herdr built-in theme (`~/.config/herdr/config.toml` [theme] block).
@@ -165,9 +201,18 @@ typeset -gA THEME_HERDR=(
   kanagawa-lotus       kanagawa-lotus    # exact
   ayu-dark             terminal          # no herdr ayu -> terminal; tune
   ayu-mirage           terminal          # -> terminal
-  ayu-light            terminal          # -> terminal (light via Ghostty ANSI)
+  ayu-light            terminal          # -> terminal
   everforest-dark      terminal          # no herdr everforest -> terminal; tune
   everforest-light     terminal          # -> terminal
+  night-owl            terminal          # -> terminal
+  night-owl-light      one-light         # -> one-light
+  monokai-pro          terminal          # terminal
+  github-dark          terminal          # terminal
+  github-light         terminal          # -> terminal
+  vesper               vesper            # exact (herdr ships vesper)
+  melange-dark         gruvbox           # gruvbox
+  melange-light        terminal          # -> terminal
+  synthwave-84         terminal          # no herdr synthwave -> Ghostty ANSI; tune
 )
 
 # slug -> hunk theme. hunk's ids are the BUNDLED SHIKI THEME IDS (verified from
@@ -208,6 +253,15 @@ typeset -gA THEME_HUNK=(
   ayu-light            github-light-default  # no shiki ayu-light; tune
   everforest-dark      everforest-dark       # shiki
   everforest-light     everforest-light      # shiki
+  night-owl            night-owl             # shiki (exact)
+  night-owl-light      github-light-default  # no shiki night-owl light; nearest light; tune
+  monokai-pro          monokai               # shiki `monokai` (regular; near Pro); tune
+  github-dark          github-dark-default   # shiki (exact)
+  github-light         github-light-default  # shiki (exact)
+  vesper               vesper                # shiki (exact)
+  melange-dark         gruvbox-dark-medium   # no shiki melange; nearest warm-dark; tune
+  melange-light        vitesse-light         # -> vitesse-light
+  synthwave-84         synthwave-84          # shiki (exact)
 )
 
 # slug -> vivid theme (generates LS_COLORS; drives eza, ls, fd, and the fzf file
@@ -243,6 +297,15 @@ typeset -gA THEME_VIVID=(
   ayu-light            gruvbox-light         # vivid ayu is dark; nearest light; tune
   everforest-dark      gruvbox-dark          # no vivid everforest; nearest; tune
   everforest-light     gruvbox-light         # nearest light; tune
+  night-owl            tokyonight-night      # no vivid night-owl; nearest navy-dark; tune
+  night-owl-light      one-light             # nearest neutral light; tune
+  monokai-pro          molokai               # vivid's monokai; tune
+  github-dark          one-dark              # no vivid github; nearest neutral-dark; tune
+  github-light         modus-operandi        # clean neutral light ~ github light; tune
+  vesper               zenburn               # no vivid vesper; nearest warm-muted-dark; tune
+  melange-dark         gruvbox-dark          # no vivid melange; nearest warm-dark; tune
+  melange-light        gruvbox-light         # nearest warm-light; tune
+  synthwave-84         cyberdream            # no vivid synthwave; nearest neon-dark; tune
 )
 
 # slug -> btop theme name (the color_theme value = a .theme file stem in
@@ -279,6 +342,15 @@ typeset -gA THEME_BTOP=(
   ayu-light            paper                 # no btop ayu-light; nearest neutral-light; tune
   everforest-dark      everforest-dark-medium
   everforest-light     everforest-light-medium
+  night-owl            night-owl             # btop built-in .theme
+  night-owl-light      paper                 # no btop night-owl light; nearest neutral-light; tune
+  monokai-pro          monokai               # btop built-in .theme
+  github-dark          onedark               # no btop github; nearest neutral-dark; tune
+  github-light         paper                 # no btop github light; nearest neutral-light; tune
+  vesper               onedark               # no btop vesper; nearest minimal-dark; tune
+  melange-dark         gruvbox_dark          # no btop melange; nearest warm-dark; tune
+  melange-light        gruvbox_light         # no btop melange; nearest warm-light; tune
+  synthwave-84         dracula               # no btop synthwave; nearest vibrant-purple-dark; tune
 )
 
 # slug -> Zed theme display name (EXACT strings from each theme extension -- the
@@ -315,6 +387,15 @@ typeset -gA THEME_ZED=(
   ayu-light            "Ayu Light"           # bundled
   everforest-dark      "Everforest Dark Medium (regular)"   # everforest ext
   everforest-light     "Everforest Light Medium (regular)"  # everforest ext
+  night-owl            "Night Owl Dark"      # night-owlz ext
+  night-owl-light      "Night Owl Light"     # night-owlz ext
+  monokai-pro          "Monokai Pro (CE)"    # monokai-pro-ce ext (single theme, incl. " (CE)")
+  github-dark          "GitHub Dark"         # github-theme ext (closest registry pair to Dark Default)
+  github-light         "GitHub Light"        # github-theme ext (closest registry pair to Light Default)
+  vesper               "Vesper"              # vesper ext
+  melange-dark         "Melange Dark"        # melange ext
+  melange-light        "Melange Light"       # melange ext
+  synthwave-84         "Synthwave84"         # synthwave84 ext (NO space/apostrophe)
 )
 
 # slug -> opencode theme. opencode built-ins are coarse (tokyonight/catppuccin/
@@ -352,4 +433,13 @@ typeset -gA THEME_OPENCODE=(
   ayu-light            system                # ayu light -> system
   everforest-dark      everforest
   everforest-light     system                # everforest built-in is dark; light -> system
+  night-owl            system                # no opencode night-owl; Ghostty ANSI. tune (custom JSON)
+  night-owl-light      system                # no light built-in -> system
+  monokai-pro          system                # no opencode monokai; Ghostty ANSI. tune
+  github-dark          system                # no opencode github; Ghostty ANSI. tune
+  github-light         system                # no light built-in -> system
+  vesper               system                # no opencode vesper; Ghostty ANSI. tune
+  melange-dark         system                # no opencode melange; Ghostty ANSI. tune
+  melange-light        system                # no light built-in -> system
+  synthwave-84         system                # no opencode synthwave; Ghostty ANSI. tune
 )

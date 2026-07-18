@@ -40,6 +40,16 @@ M.map = {
   ["ayu-light"]          = { "ayu-light", true },
   ["everforest-dark"]    = { "everforest", false },
   ["everforest-light"]   = { "everforest", true },
+  ["night-owl"]          = { "night-owl", false },
+  ["night-owl-light"]    = { "onelight", true },   -- no NO Light nvim plugin; nearest light (mirrors registry.zsh)
+  ["monokai-pro"]        = { "monokai-pro", false },
+  ["github-dark"]        = { "github_dark_default", false },
+  ["github-light"]       = { "github_light_default", true },
+  ["vesper"]             = { "vesper", false },
+  -- melange: one colorscheme, light/dark via vim.o.background (like gruvbox).
+  ["melange-dark"]       = { "melange", false },
+  ["melange-light"]      = { "melange", true },
+  ["synthwave-84"]       = { "synthwave84", false },
 }
 
 local appearance = nil -- "dark" | "light", seeded lazily

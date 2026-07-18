@@ -17,7 +17,13 @@
     "solarized": true,
     "dracula": true,
     "kanagawa-themes": true,
-    "everforest": true
+    "everforest": true,
+    "night-owlz": true,
+    "monokai-pro-ce": true,
+    "github-theme": true,
+    "vesper": true,
+    "melange": true,
+    "synthwave84": true
   },
   // <<< theme-controller <<<
   "project_panel": {
