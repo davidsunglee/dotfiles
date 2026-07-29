@@ -52,7 +52,7 @@
     "diagnostics": false,
     "metrics": false
   },
-  "theme": { "mode": "dark", "light": "Nord", "dark": "Nord" },
+  "theme": { "mode": "system", "light": "Night Owl Light", "dark": "Vesper" },
   "icon_theme": "Warm Charmed Icons",
 
   "buffer_font_size": 15,

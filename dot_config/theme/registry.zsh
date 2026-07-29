@@ -177,7 +177,7 @@ typeset -gA THEME_ISLIGHT=(
 #   kanagawa, kanagawa-lotus, vesper. (No poimandres; catppuccin & tokyonight
 #   each collapse to a single flavor; no rose-pine-moon; no ayu/everforest.)
 typeset -gA THEME_HERDR=(
-  poimandres           terminal          # no herdr poimandres -> Ghostty ANSI is the best match; tune
+  poimandres           one-dark          # no herdr poimandres -> one-dark
   nord                 nord              # exact
   rose-pine            rose-pine         # exact
   rose-pine-moon       terminal          # -> terminal
@@ -203,7 +203,7 @@ typeset -gA THEME_HERDR=(
   ayu-mirage           terminal          # -> terminal
   ayu-light            terminal          # -> terminal
   everforest-dark      terminal          # no herdr everforest -> terminal; tune
-  everforest-light     terminal          # -> terminal
+  everforest-light     gruvbox-light     # -> gruvbox-light
   night-owl            terminal          # -> terminal
   night-owl-light      one-light         # -> one-light
   monokai-pro          terminal          # terminal
@@ -212,7 +212,7 @@ typeset -gA THEME_HERDR=(
   vesper               vesper            # exact (herdr ships vesper)
   melange-dark         gruvbox           # gruvbox
   melange-light        terminal          # -> terminal
-  synthwave-84         terminal          # no herdr synthwave -> Ghostty ANSI; tune
+  synthwave-84         dracula           # no herdr synthwave -> Ghostty ANSI; tune
 )
 
 # slug -> hunk theme. hunk's ids are the BUNDLED SHIKI THEME IDS (verified from

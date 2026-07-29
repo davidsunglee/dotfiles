@@ -1,6 +1,6 @@
 {
   "modelTiers": {
-    "capable": "anthropic/claude-opus-4-8",
+    "capable": "anthropic/claude-opus-5",
     "standard": "anthropic/claude-sonnet-5",
     "cheap": "anthropic/claude-haiku-4-5"
   },

@@ -10,8 +10,10 @@ onboarding = false
 # the map, not these lines. Keep the fence comments intact.
 # >>> theme-controller (managed) >>>
 [theme]
-name = "nord"
-auto_switch = false
+name = "one-light"
+auto_switch = true
+dark_name = "vesper"
+light_name = "one-light"
 # <<< theme-controller (managed) <<<
 
 [terminal]
@@ -101,7 +103,6 @@ switch_workspace = "prefix+1..9" # optional indexed binding, e.g. "prefix+shift+
 show_agent_labels_on_pane_borders = true
 
 # Agent panel scope: "current" or "all". Toggling it in the sidebar saves this setting.
-agent_panel_scope = "all"
 agent_panel_sort = "spaces"
 
 # Accent color for highlights, borders, and navigation UI.
