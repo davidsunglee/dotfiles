@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verdict", "summary", "standards", "spec"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["clean", "findings"],
+      "description": "clean when no blocking and no should-fix finding remains on either axis; nits alone are still clean."
+    },
+    "summary": {
+      "type": "string",
+      "description": "One line per axis: total findings and the worst issue within that axis. Do not rank across axes."
+    },
+    "standards": {
+      "type": "array",
+      "description": "Findings on the Standards axis: documented-standard breaches and baseline smells.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "file", "line", "finding", "requires_design_decision"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable short handle for this finding, e.g. S1, S2. Reuse the same id across rounds when re-reporting the same defect."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["blocking", "should-fix", "nit"]
+          },
+          "file": {
+            "type": "string",
+            "description": "Repository-relative path. Never wrap or abbreviate it."
+          },
+          "line": {
+            "type": ["integer", "null"]
+          },
+          "finding": {
+            "type": "string",
+            "description": "The full finding: what is wrong, the standard or spec line it breaches, and the evidence. Prose, as long as it needs to be."
+          },
+          "requires_design_decision": {
+            "type": "boolean",
+            "description": "True when remediation requires choosing between designs with real trade-offs, rather than applying a determinate fix."
+          }
+        }
+      }
+    },
+    "spec": {
+      "type": "array",
+      "description": "Findings on the Spec axis: missing requirements, scope creep, and wrong implementations of requirements.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "file", "line", "finding", "requires_design_decision"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable short handle for this finding, e.g. P1, P2. Reuse the same id across rounds when re-reporting the same defect."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["blocking", "should-fix", "nit"]
+          },
+          "file": {
+            "type": "string",
+            "description": "Repository-relative path. Never wrap or abbreviate it."
+          },
+          "line": {
+            "type": ["integer", "null"]
+          },
+          "finding": {
+            "type": "string",
+            "description": "The full finding, quoting the spec line it rests on."
+          },
+          "requires_design_decision": {
+            "type": "boolean",
+            "description": "True when remediation requires choosing between designs with real trade-offs, rather than applying a determinate fix."
+          }
+        }
+      }
+    }
+  }
+}
