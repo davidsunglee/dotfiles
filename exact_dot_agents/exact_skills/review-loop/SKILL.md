@@ -51,7 +51,7 @@ Round 1:
 ```bash
 codex exec \
   -C "$WORKTREE" -s read-only \
-  -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
+  -m gpt-5.6-sol -c model_reasoning_effort=high \
   --output-schema "$HOME/.agents/skills/review-loop/findings-schema.json" \
   -o "$ROUND/findings.json" \
   "Run the code-review skill at $HOME/.agents/skills/code-review/SKILL.md.
@@ -66,7 +66,7 @@ Rounds 2+, against the id recorded last round:
 ```bash
 codex exec resume "$THREAD_ID" \
   -C "$WORKTREE" -s read-only \
-  -m gpt-5.6-sol -c model_reasoning_effort=xhigh \
+  -m gpt-5.6-sol -c model_reasoning_effort=high \
   --output-schema "$HOME/.agents/skills/review-loop/findings-schema.json" \
   -o "$ROUND/findings.json" \
   "The prior findings were remediated in: $PREVIOUS_ROUND/remediation.md
