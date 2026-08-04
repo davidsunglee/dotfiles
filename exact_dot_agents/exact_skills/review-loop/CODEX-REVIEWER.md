@@ -1,6 +1,6 @@
-# Headless Codex — mechanics and failure modes
+# Headless Codex reviewer — mechanics and failure modes
 
-Reference for driving `codex exec` from inside Claude Code, supporting [`SKILL.md`](SKILL.md).
+Reference for driving the fixed `codex exec` reviewer from any invoking host, supporting [`SKILL.md`](SKILL.md).
 
 ## Flags that carry weight
 
@@ -20,7 +20,7 @@ Every round carries `-m gpt-5.6-sol -c model_reasoning_effort=xhigh` on the comm
 
 Both flags are load-bearing. `xhigh` is where the two axes find defects a cheaper effort walks past, and reviews compare across rounds — a round run at a different model or effort is not comparable to the one before it, so residuals and oscillation stop meaning anything.
 
-Keep the pin on both the round-1 command and the resume command. Each Bash call is a fresh shell, so the flags cannot be hoisted into a shared variable; they are repeated because they must be.
+Keep the pin on both the round-1 command and the resume command. Each shell call is fresh, so the flags cannot be hoisted into a shared variable; they are repeated because they must be.
 
 `-c model_reasoning_effort=low` is for smoke-testing the plumbing, never for a round that reports findings. Confirm what actually ran by reading the header Codex prints to `codex.log`:
 

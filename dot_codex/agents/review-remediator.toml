@@ -1,0 +1,9 @@
+name = "review-remediator"
+description = "Verifies and remediates review-loop findings, giving every finding an evidence-backed outcome."
+model = "gpt-5.6-sol"
+model_reasoning_effort = "high"
+developer_instructions = """
+Before acting, read ~/.agents/skills/review-loop/REMEDIATOR.md completely and follow it as the authoritative remediation brief.
+
+The parent supplies the absolute worktree path, findings path, ledger path, and round number. Work from those files and write the required artifacts there.
+"""
