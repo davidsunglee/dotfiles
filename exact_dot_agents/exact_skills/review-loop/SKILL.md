@@ -9,7 +9,9 @@ Codex reviews, a dedicated subagent remediates, and the loop repeats until **cle
 
 Findings move as a **file**, never as prose you retype. Every path, line number, and quotation the reviewer emits reaches the remediating agent byte-identical — transcription is where paths break.
 
-The **ledger** at `<artifact-dir>/review-loop/ledger.jsonl` is the loop's memory: one JSON object per finding answered, carrying `round`, `id`, `outcome`, and `summary`. Which findings have recurred, how long each has been open, and whether a fix undid an earlier one are facts to look up there, not things to carry across a ten-minute background wait. Keep it one-line-per-finding — work not answering a finding, like a codebase-wide sweep, belongs in `remediation.md`, because an entry with no finding id is one the recurrence lookup cannot read.
+One **defect class** is one violated invariant or required repair wherever it occurs in the reviewed change. The reviewer reports the class once, with every site attached.
+
+The **ledger** at `<boundary-dir>/ledger.jsonl` is the loop's memory: one JSON object per finding answered, carrying `round`, `id`, `outcome`, and `summary`. Which findings have recurred, how long each has been open, and whether a fix undid an earlier one are facts to look up there, not things to carry across a ten-minute background wait. Keep it one-line-per-finding — work not answering a finding, like a codebase-wide sweep, belongs in `remediation.md`, because an entry with no finding id is one the recurrence lookup cannot read.
 
 ## Invoking host
 
@@ -30,13 +32,14 @@ Three conditions hand the loop back to the user. Everything else advances into t
 
 ## 1. Pin the round
 
-Establish five things, and resolve each rather than asking:
+Establish six things, and resolve each rather than asking:
 
 - **Worktree** — absolute path to the checkout under review. Per-ticket worktrees follow `~/.humanlayer/workspaces/<ticket>/<project>`, where `<project>` is the repository's directory name.
 - **Fixed point** — the commit the diff is measured from. A review prompt's front matter carries `base`; otherwise it is the merge-base with `main`.
 - **Review prompt** — the `NN-review-prompt-*.md` beside the task's other artifacts. It must name the spec and the standards files the change is measured against, including directory-scoped ones: headless, every source it leaves out is one the round runs without. Absent, write it first — [`REVIEW-PROMPT.md`](REVIEW-PROMPT.md) covers what it carries and who writes it.
-- **Ledger** — `<artifact-dir>/review-loop/ledger.jsonl`, initialized as an empty file when this is round 1 and no ledger exists.
-- **Round directory** — `<artifact-dir>/review-loop/round-<NN>/`, created now.
+- **Boundary** — the review this loop serves, named for the scope its review prompt covers: `phase-2`, `phases-3-4`. A ticket meets several, each opening its own thread against its own fixed point, so each takes its own directory at `<artifact-dir>/review-loop/<boundary>/`. Rounds are counted, ledgers are read, and the round-5 **gate** is judged inside one boundary — never across the ticket. The directory name is also how a later session says which loop it is resuming.
+- **Ledger** — `<boundary-dir>/ledger.jsonl`, initialized as an empty file when this is round 1 and no ledger exists. A finding from an earlier boundary, raised against code this one does not cover, is not a recurrence.
+- **Round directory** — `<boundary-dir>/round-<NN>/`, created now.
 
 Done when `git rev-parse <fixed-point>` resolves inside the worktree, `git diff <fixed-point>...HEAD` is non-empty, and `git status --short` is empty. The reviewer measures committed changes through `HEAD`; a bad ref, empty diff, or dirty worktree fails here rather than disappearing from the review.
 
@@ -57,22 +60,23 @@ codex exec \
   "Run the code-review skill at $HOME/.agents/skills/code-review/SKILL.md.
 Fixed point: $BASE
 Review prompt: $PROMPT_PATH
-Report every finding through the output schema." \
+Report every defect class through the output schema, naming every site where it occurs." \
   </dev/null >"$ROUND/codex.log" 2>&1
 ```
 
 Rounds 2+, against the id recorded last round:
 
 ```bash
-codex exec resume "$THREAD_ID" \
+codex exec \
   -C "$WORKTREE" -s read-only \
   -m gpt-5.6-sol -c model_reasoning_effort=high \
   --output-schema "$HOME/.agents/skills/review-loop/findings-schema.json" \
   -o "$ROUND/findings.json" \
+  resume "$THREAD_ID" \
   "The prior findings were remediated in: $PREVIOUS_ROUND/remediation.md
 Re-verify each one against the current tree, and review the remediation commits themselves for new defects.
 $RECURRENCE
-Report residuals and anything new through the output schema, reusing ids for findings that still stand." \
+Report residuals and anything new through the output schema, reusing ids for findings that still stand. Report each defect class once, with every remaining site attached." \
   </dev/null >"$ROUND/codex.log" 2>&1
 ```
 
@@ -96,7 +100,7 @@ Every finding goes to it, whatever its severity — including the ones the revie
 
 It writes `$ROUND/remediation.md`, which is what round N+1 sends back to the reviewer.
 
-Done when `remediation.md` carries an outcome for every id in `findings.json`, the repository's verification gates pass, every fix is committed, and `git status --short` is empty. A finding left without an outcome is one the loop will report clean over.
+Done when `remediation.md` carries an outcome for every id in `findings.json`, every outcome is appended to the ledger, the repository's verification gates pass, every fix is committed, and `git status --short` is empty. A finding left without an outcome is one the loop will report clean over. A round left out of the ledger is invisible to every later recurrence lookup, and the round most often lost is the one before a **gate** — the round whose state a later session has to pick up.
 
 ## 4. Judge the round
 

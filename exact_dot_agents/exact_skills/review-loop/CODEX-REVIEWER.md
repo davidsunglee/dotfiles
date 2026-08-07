@@ -39,6 +39,16 @@ session id: 019fbb0c-3844-7001-b44f-12ec3007d6d4
 
 Resume it explicitly by id. `codex exec resume --last` also works and filters to sessions matching the current directory — but any other Codex run in that worktree becomes the newest, and the loop silently resumes the wrong thread. By-id is deterministic.
 
+`resume` is a subcommand, and its own option set is narrower than `codex exec`'s — `-C`, `-s`, and `--add-dir` are absent from it. Keep the whole flag block on `codex exec`, ahead of the subcommand:
+
+```
+codex exec <flags> resume "$THREAD_ID" "<prompt>"
+```
+
+Flags in that position govern the resumed session — the header it prints reports the working root, sandbox, model, and effort they set. That placement also makes the resume command round 1's command with one line inserted, so the two cannot drift.
+
+A resumed round prints the same session id it was given, so recording the id again each round costs nothing and catches a version that forks instead.
+
 Recovering a lost id: `~/.codex/session_index.jsonl` holds one `{"id", "thread_name", "updated_at"}` per session, newest last. Transcripts live under `~/.codex/sessions/<yyyy>/<mm>/<dd>/`. Resume defaults to cwd-filtered; `--all` widens it.
 
 ## Failure modes

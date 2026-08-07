@@ -4,9 +4,7 @@ Host branch for [`SKILL.md`](SKILL.md). Use these mechanics for the reviewer pro
 
 ## Run the reviewer
 
-Start the `codex exec` command through the Bash tool with `run_in_background: true`. Keep `</dev/null` on the command. Record the returned background task id, and continue the same round when Claude Code reports that the process exited.
-
-The round has returned only when the background task reports a terminal exit. Then apply step 2's completion criterion in the main skill.
+Start the `codex exec` command through the Bash tool with `run_in_background: true`. Keep `</dev/null` on the command. Record the returned background task id and wait for that task's terminal exit notification; it is the round's sole liveness signal. Then apply step 2's completion criterion in the main skill.
 
 ## Dispatch the remediator
 

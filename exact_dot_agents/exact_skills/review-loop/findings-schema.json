@@ -18,7 +18,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "severity", "file", "line", "finding", "requires_design_decision"],
+        "required": ["id", "severity", "file", "line", "sibling_sites", "finding", "requires_design_decision"],
         "properties": {
           "id": {
             "type": "string",
@@ -26,7 +26,8 @@
           },
           "severity": {
             "type": "string",
-            "enum": ["blocking", "should-fix", "nit"]
+            "enum": ["blocking", "should-fix", "nit"],
+            "description": "blocking — the code is wrong: incorrect behavior, a broken contract, or a standard breached in a way that will mislead the next reader into a defect. should-fix — a documented standard is genuinely breached, and you would raise it again next round against unchanged code. nit — preference, wording, or local style with no documented rule behind it. Nits do not keep the loop open: neither soften a real breach into a nit to end a round, nor raise taste to should-fix to keep one going."
           },
           "file": {
             "type": "string",
@@ -35,9 +36,14 @@
           "line": {
             "type": ["integer", "null"]
           },
+          "sibling_sites": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Every other site in this defect class — sharing the same violated invariant or required repair — as repository-relative path:line. Empty when the class occurs once. Search the reviewed change exhaustively so one finding carries the whole class rather than surfacing one site per round."
+          },
           "finding": {
             "type": "string",
-            "description": "The full finding: what is wrong, the standard or spec line it breaches, and the evidence. Prose, as long as it needs to be."
+            "description": "The full finding: what is wrong, the standard or spec line it breaches, and the evidence. Prose, as long as it needs to be. When sibling_sites is non-empty, state what makes the sites one defect class."
           },
           "requires_design_decision": {
             "type": "boolean",
@@ -52,7 +58,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "severity", "file", "line", "finding", "requires_design_decision"],
+        "required": ["id", "severity", "file", "line", "sibling_sites", "finding", "requires_design_decision"],
         "properties": {
           "id": {
             "type": "string",
@@ -60,7 +66,8 @@
           },
           "severity": {
             "type": "string",
-            "enum": ["blocking", "should-fix", "nit"]
+            "enum": ["blocking", "should-fix", "nit"],
+            "description": "blocking — the change implements a requirement wrongly, omits one, or does something the spec does not sanction. should-fix — a spec line is genuinely breached, and you would raise it again next round against unchanged code. nit — preference or wording with no spec line behind it. Nits do not keep the loop open: neither soften a real breach into a nit to end a round, nor raise taste to should-fix to keep one going."
           },
           "file": {
             "type": "string",
@@ -69,9 +76,14 @@
           "line": {
             "type": ["integer", "null"]
           },
+          "sibling_sites": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Every other site in this defect class — sharing the same violated invariant or required repair — as repository-relative path:line. Empty when the class occurs once. Search the reviewed change exhaustively so one finding carries the whole class rather than surfacing one site per round."
+          },
           "finding": {
             "type": "string",
-            "description": "The full finding, quoting the spec line it rests on."
+            "description": "The full finding, quoting the spec line it rests on. When sibling_sites is non-empty, state what makes the sites one defect class."
           },
           "requires_design_decision": {
             "type": "boolean",

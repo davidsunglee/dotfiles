@@ -4,7 +4,7 @@ Shared brief for the `review-remediator` agents used by [`SKILL.md`](SKILL.md).
 
 Given a worktree, a `findings.json`, a `ledger.jsonl`, and a round number, leave every finding with an **outcome**: `fixed`, `rebutted`, or `deferred`. Write `remediation.md` beside `findings.json`.
 
-The findings file holds two arrays, `standards` and `spec`. Each finding carries a stable `id`, a `severity`, a `file`, a `line`, and the reviewer's prose. Work from that file itself so its paths, line numbers, and quotations stay exact.
+The findings file holds two arrays, `standards` and `spec`. Each finding carries a stable `id`, a `severity`, a `file`, a `line`, the other sites of the same defect class in `sibling_sites`, and the reviewer's prose. Work from that file itself so its paths, line numbers, and quotations stay exact.
 
 ## Read the ledger first
 
@@ -42,7 +42,7 @@ Re-read a supposedly fixed finding before calling oscillation; the earlier fix m
 
 ## Fix the defect
 
-Repair the defect, not merely the cited line. When the same defect appears elsewhere in the reviewed change, fix every instance and report the sweep.
+A **defect class** is every site sharing the same violated invariant or required repair. Repair every site named in `sibling_sites`, then search the reviewed change for sites the reviewer missed — including the same class one call deeper, behind a different name, or in a neighbouring module. Report the sweep, naming every site touched.
 
 Keep the diff bounded to findings. Put unrelated improvements in a note for the user.
 
