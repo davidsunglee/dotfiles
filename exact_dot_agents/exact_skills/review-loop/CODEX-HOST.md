@@ -4,9 +4,9 @@ Host branch for [`SKILL.md`](SKILL.md). Use these mechanics for the reviewer pro
 
 ## Run the reviewer
 
-Start the `codex exec` command with `exec_command` and a short initial yield. When it returns a live `session_id`, continue that same session with `write_stdin` until it exits. Poll in intervals no longer than 60 seconds and keep the user updated between polls. The live session owns the process and its final exit status; starting a replacement process would duplicate the round.
+Run step 2's `codex exec` command with `</dev/null >"$ROUND/codex.log" 2>&1` appended, using `exec_command` with a short initial yield. When it returns a live `session_id`, continue that same session with `write_stdin` until it exits. Poll in intervals no longer than 60 seconds and keep the user updated between polls. The live session owns the process and its final exit status; starting a replacement process would duplicate the round.
 
-Keep `</dev/null` on the command. The unified shell session handles the long runtime, so the command itself stays in the foreground rather than being suffixed with `&`.
+The unified shell session handles the long runtime, so the command itself stays in the foreground rather than being suffixed with `&`.
 
 The round has returned only when the shell tool reports a terminal exit. Then apply step 2's completion criterion in the main skill.
 

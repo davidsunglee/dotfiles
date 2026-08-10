@@ -15,10 +15,11 @@ The **ledger** at `<boundary-dir>/ledger.jsonl` is the loop's memory: one JSON o
 
 ## Invoking host
 
-Before launching the first reviewer process, read exactly one host branch:
+Before launching the first reviewer process, read the first matching host branch:
 
-- From Codex, read [`CODEX-HOST.md`](CODEX-HOST.md).
-- From Claude Code, read [`CLAUDE-CODE-HOST.md`](CLAUDE-CODE-HOST.md).
+- When `test -n "${HUMANLAYER_SESSION_ID:-}"` succeeds, or the shell tool offers only bounded foreground calls, read [`BOUNDED-BASH-HOST.md`](BOUNDED-BASH-HOST.md).
+- Otherwise, from Codex read [`CODEX-HOST.md`](CODEX-HOST.md).
+- Otherwise, from Claude Code read [`CLAUDE-CODE-HOST.md`](CLAUDE-CODE-HOST.md).
 
 The selected branch governs process launch, waiting, and remediator dispatch for the whole loop. Return here after each host-specific action.
 
@@ -60,8 +61,7 @@ codex exec \
   "Run the code-review skill at $HOME/.agents/skills/code-review/SKILL.md.
 Fixed point: $BASE
 Review prompt: $PROMPT_PATH
-Report every defect class through the output schema, naming every site where it occurs." \
-  </dev/null >"$ROUND/codex.log" 2>&1
+Report every defect class through the output schema, naming every site where it occurs."
 ```
 
 Rounds 2+, against the id recorded last round:
@@ -76,13 +76,12 @@ codex exec \
   "The prior findings were remediated in: $PREVIOUS_ROUND/remediation.md
 Re-verify each one against the current tree, and review the remediation commits themselves for new defects.
 $RECURRENCE
-Report residuals and anything new through the output schema, reusing ids for findings that still stand. Report each defect class once, with every remaining site attached." \
-  </dev/null >"$ROUND/codex.log" 2>&1
+Report residuals and anything new through the output schema, reusing ids for findings that still stand. Report each defect class once, with every remaining site attached."
 ```
 
 `$RECURRENCE` is built from the ledger: name every id raised more than once and how many rounds it has been open. A reviewer that knows it is restating a claim for the fourth time weighs it differently than one that believes it is finding it fresh.
 
-Launch and wait using the selected host branch. Reviews take upwards of ten minutes, so keep the process attached to the host's long-running execution mechanism. `</dev/null` is load-bearing: without it Codex reads stdin and blocks forever.
+Launch and wait using the selected host branch. Reviews take upwards of ten minutes, so keep the process attached to the host's long-running execution mechanism. The host branch supplies the log redirection and `</dev/null`; without EOF on stdin, Codex reads stdin and blocks forever.
 
 When the round returns, record its thread id — round N+1 resumes against it, and a round that ends at a **gate** may sit for hours before that happens:
 
