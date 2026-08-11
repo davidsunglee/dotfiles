@@ -17,9 +17,10 @@ The **ledger** at `<boundary-dir>/ledger.jsonl` is the loop's memory: one JSON o
 
 Before launching the first reviewer process, read the first matching host branch:
 
-- When `test -n "${HUMANLAYER_SESSION_ID:-}"` succeeds, or the shell tool offers only bounded foreground calls, read [`BOUNDED-BASH-HOST.md`](BOUNDED-BASH-HOST.md).
-- Otherwise, from Codex read [`CODEX-HOST.md`](CODEX-HOST.md).
-- Otherwise, from Claude Code read [`CLAUDE-CODE-HOST.md`](CLAUDE-CODE-HOST.md).
+- When `test -n "${HUMANLAYER_SESSION_ID:-}"` succeeds, read [`BOUNDED-BASH-HOST.md`](BOUNDED-BASH-HOST.md).
+- Otherwise, from native Codex when the shell tool returns a resumable `session_id`, read [`CODEX-HOST.md`](CODEX-HOST.md).
+- Otherwise, from native Claude Code when Bash offers `run_in_background`, read [`CLAUDE-CODE-HOST.md`](CLAUDE-CODE-HOST.md).
+- Otherwise, when Bash has no resumable session handle, read [`BOUNDED-BASH-HOST.md`](BOUNDED-BASH-HOST.md). CodeLayer uses this branch even when its model is Codex.
 
 The selected branch governs process launch, waiting, and remediator dispatch for the whole loop. Return here after each host-specific action.
 
@@ -81,7 +82,7 @@ Report residuals and anything new through the output schema, reusing ids for fin
 
 `$RECURRENCE` is built from the ledger: name every id raised more than once and how many rounds it has been open. A reviewer that knows it is restating a claim for the fourth time weighs it differently than one that believes it is finding it fresh.
 
-Launch and wait using the selected host branch. Reviews take upwards of ten minutes, so keep the process attached to the host's long-running execution mechanism. The host branch supplies the log redirection and `</dev/null`; without EOF on stdin, Codex reads stdin and blocks forever.
+Launch and wait using the selected host branch. Reviews take upwards of ten minutes, so keep the wait attached to the host's long-running execution mechanism until it reports a terminal state. The host branch supplies the log redirection and `</dev/null`; without EOF on stdin, Codex reads stdin and blocks forever.
 
 When the round returns, record its thread id — round N+1 resumes against it, and a round that ends at a **gate** may sit for hours before that happens:
 

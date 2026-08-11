@@ -3,7 +3,7 @@ set -eu
 
 usage() {
   echo "usage: detached-reviewer.sh {launch|retry} ROUND -- COMMAND [ARG ...]" >&2
-  echo "       detached-reviewer.sh status ROUND" >&2
+  echo "       detached-reviewer.sh {status|wait} ROUND" >&2
   exit 64
 }
 
@@ -83,10 +83,32 @@ read_state() {
 
 print_state() {
   read_state
+  print_loaded_state
+}
+
+print_loaded_state() {
   case "$detail" in
     '') printf '%s\n' "$state" ;;
     *) printf '%s %s\n' "$state" "$detail" ;;
   esac
+}
+
+wait_for_terminal() {
+  while :; do
+    read_state
+    case "$state" in
+      running|unverifiable) sleep 2 ;;
+      lost)
+        sleep 1
+        read_state
+        case "$state" in
+          running|unverifiable) continue ;;
+          *) print_loaded_state; return ;;
+        esac
+        ;;
+      *) print_loaded_state; return ;;
+    esac
+  done
 }
 
 archive_state() {
@@ -137,9 +159,13 @@ trap "exit 143" 15
 }
 
 case "$mode" in
-  status)
+  status|wait)
     [ "$#" -eq 0 ] || usage
-    print_state
+    if [ "$mode" = wait ]; then
+      wait_for_terminal
+    else
+      print_state
+    fi
     ;;
   launch|retry)
     [ "$#" -ge 2 ] || usage
