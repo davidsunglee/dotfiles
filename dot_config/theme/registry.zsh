@@ -333,20 +333,20 @@ typeset -gA THEME_BTOP=(
   solarized-dark       solarized_dark        # btop built-in
   solarized-light      solarized_light       # btop built-in
   one-dark             onedark               # btop built-in
-  one-light            paper                 # no btop one-light; nearest neutral-light; tune
+  one-light            catppuccin_latte      # no btop one-light
   dracula              dracula               # btop built-in
   kanagawa-wave        kanagawa-wave         # btop built-in
   kanagawa-lotus       kanagawa-lotus        # btop built-in
   ayu-dark             ayu                   # btop built-in
   ayu-mirage           ayu                   # no btop ayu-mirage; use ayu; tune
-  ayu-light            paper                 # no btop ayu-light; nearest neutral-light; tune
+  ayu-light            catppuccin_latte      # no btop ayu-light
   everforest-dark      everforest-dark-medium
   everforest-light     everforest-light-medium
   night-owl            night-owl             # btop built-in .theme
-  night-owl-light      paper                 # no btop night-owl light; nearest neutral-light; tune
+  night-owl-light      catppuccin_latte      # no btop night-owl-light
   monokai-pro          monokai               # btop built-in .theme
   github-dark          onedark               # no btop github; nearest neutral-dark; tune
-  github-light         paper                 # no btop github light; nearest neutral-light; tune
+  github-light         catppuccin_latte      # no btop github-light
   vesper               onedark               # no btop vesper; nearest minimal-dark; tune
   melange-dark         gruvbox_dark          # no btop melange; nearest warm-dark; tune
   melange-light        gruvbox_light         # no btop melange; nearest warm-light; tune

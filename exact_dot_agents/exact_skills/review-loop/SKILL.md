@@ -34,11 +34,12 @@ Three conditions hand the loop back to the user. Everything else advances into t
 
 ## 1. Pin the round
 
-Establish six things, and resolve each rather than asking:
+Establish seven things, and resolve each rather than asking:
 
 - **Worktree** — absolute path to the checkout under review. Per-ticket worktrees follow `~/.humanlayer/workspaces/<ticket>/<project>`, where `<project>` is the repository's directory name.
 - **Fixed point** — the commit the diff is measured from. A review prompt's front matter carries `base`; otherwise it is the merge-base with `main`.
 - **Review prompt** — the `NN-review-prompt-*.md` beside the task's other artifacts. It must name the spec and the standards files the change is measured against, including directory-scoped ones: headless, every source it leaves out is one the round runs without. Absent, write it first — [`REVIEW-PROMPT.md`](REVIEW-PROMPT.md) covers what it carries and who writes it.
+- **Frame** — what this loop is entitled to judge, fixed at round 1: the behaviour the change introduces, measured against the review prompt's spec and standards. A finding is in frame when it names a line the change introduced or modified, or a requirement the review prompt named that the change left unmet. The task's own artifacts — outline, review prompt, ledger, remediation notes — are the loop's **instruments**: the reviewer reads them to judge the change and reports against the change.
 - **Boundary** — the review this loop serves, named for the scope its review prompt covers: `phase-2`, `phases-3-4`. A ticket meets several, each opening its own thread against its own fixed point, so each takes its own directory at `<artifact-dir>/review-loop/<boundary>/`. Rounds are counted, ledgers are read, and the round-5 **gate** is judged inside one boundary — never across the ticket. The directory name is also how a later session says which loop it is resuming.
 - **Ledger** — `<boundary-dir>/ledger.jsonl`, initialized as an empty file when this is round 1 and no ledger exists. A finding from an earlier boundary, raised against code this one does not cover, is not a recurrence.
 - **Round directory** — `<boundary-dir>/round-<NN>/`, created now.
@@ -62,7 +63,8 @@ codex exec \
   "Run the code-review skill at $HOME/.agents/skills/code-review/SKILL.md.
 Fixed point: $BASE
 Review prompt: $PROMPT_PATH
-Report every defect class through the output schema, naming every site where it occurs."
+Report every defect class through the output schema, naming every site where it occurs.
+Every finding names a line this change introduced or modified, or a review-prompt requirement it left unmet."
 ```
 
 Rounds 2+, against the id recorded last round:
@@ -75,9 +77,10 @@ codex exec \
   -o "$ROUND/findings.json" \
   resume "$THREAD_ID" \
   "The prior findings were remediated in: $PREVIOUS_ROUND/remediation.md
-Re-verify each one against the current tree, and review the remediation commits themselves for new defects.
+Re-verify each one against the current tree, and review the remediation commits for defects they introduce.
 $RECURRENCE
-Report residuals and anything new through the output schema, reusing ids for findings that still stand. Report each defect class once, with every remaining site attached."
+Report residuals and anything new through the output schema, reusing ids for findings that still stand. Report each defect class once, with every remaining site attached.
+Every finding names a line this change introduced or modified, or a review-prompt requirement it left unmet."
 ```
 
 `$RECURRENCE` is built from the ledger: name every id raised more than once and how many rounds it has been open. A reviewer that knows it is restating a claim for the fourth time weighs it differently than one that believes it is finding it fresh.
