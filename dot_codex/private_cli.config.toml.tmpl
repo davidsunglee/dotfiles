@@ -1,6 +1,6 @@
 approvals_reviewer = "auto_review"
-model = "gpt-5.6-sol"
-model_reasoning_effort = "xhigh"
+model = "gpt-6-astra"
+model_reasoning_effort = "high"
 service_tier = "default"
 
 [projects."{{ .chezmoi.homeDir }}/Code/pi-config"]
@@ -44,7 +44,12 @@ trusted_hash = "sha256:1a178fb1964da48bac6eda961ee1c9164cc7abf099a8c37149f196b18
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "context-used", "context-window-size", "thread-title"]
 status_line_use_colors = true
-theme = "catppuccin-latte"
+theme = "base16"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+"gpt-5.6-sol" = 4
+gpt-6-astra = 2
 
 [plugins."cloudflare@openai-curated"]
 enabled = true

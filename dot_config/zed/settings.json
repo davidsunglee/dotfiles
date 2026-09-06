@@ -22,7 +22,6 @@
     "monokai-pro-ce": true,
     "github-theme": true,
     "vesper": true,
-    "melange": true,
     "synthwave84": true
   },
   // <<< theme-controller <<<
@@ -52,7 +51,7 @@
     "diagnostics": false,
     "metrics": false
   },
-  "theme": { "mode": "system", "light": "Night Owl Light", "dark": "Vesper" },
+  "theme": { "mode": "dark", "light": "Everforest Dark Medium (regular)", "dark": "Everforest Dark Medium (regular)" },
   "icon_theme": "Warm Charmed Icons",
 
   "buffer_font_size": 15,

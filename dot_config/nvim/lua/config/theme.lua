@@ -46,9 +46,6 @@ M.map = {
   ["github-dark"]        = { "github_dark_default", false },
   ["github-light"]       = { "github_light_default", true },
   ["vesper"]             = { "vesper", false },
-  -- melange: one colorscheme, light/dark via vim.o.background (like gruvbox).
-  ["melange-dark"]       = { "melange", false },
-  ["melange-light"]      = { "melange", true },
   ["synthwave-84"]       = { "synthwave84", false },
 }
 

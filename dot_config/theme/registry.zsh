@@ -24,7 +24,6 @@ typeset -ga THEME_SLUGS=(
   monokai-pro
   github-dark github-light
   vesper
-  melange-dark melange-light
   synthwave-84
 )
 
@@ -63,8 +62,6 @@ typeset -gA THEME_GHOSTTY=(
   github-dark          "GitHub Dark Default"
   github-light         "GitHub Light Default"
   vesper               "Vesper"
-  melange-dark         "Melange Dark"
-  melange-light        "Melange Light"
   synthwave-84         "Synthwave Everything"   # truest match to Robb Owen's Synthwave '84 palette
 )
 
@@ -103,8 +100,6 @@ typeset -gA THEME_BAT=(
   github-dark          github-dark           # custom tmTheme in bat/themes/
   github-light         "GitHub"              # bat built-in (light GitHub)
   vesper               vesper                # custom tmTheme in bat/themes/
-  melange-dark         melange-dark          # custom tmTheme in bat/themes/
-  melange-light        melange-light         # custom tmTheme in bat/themes/
   synthwave-84         synthwave-84          # custom tmTheme in bat/themes/
 )
 
@@ -146,8 +141,6 @@ typeset -gA THEME_NVIM=(
   github-dark          github_dark_default   # projekt0n/github-nvim-theme
   github-light         github_light_default  # projekt0n/github-nvim-theme
   vesper               vesper                # datsfilipe/vesper.nvim (dark only)
-  melange-dark         melange               # savq/melange-nvim (bg drives variant)
-  melange-light        melange               # savq/melange-nvim (bg drives variant)
   synthwave-84         synthwave84           # LunarVim/synthwave84.nvim (dark only)
 )
 
@@ -164,7 +157,6 @@ typeset -gA THEME_ISLIGHT=(
   everforest-light 1
   night-owl-light  1
   github-light     1
-  melange-light    1
 )
 
 # slug -> herdr built-in theme (`~/.config/herdr/config.toml` [theme] block).
@@ -201,7 +193,7 @@ typeset -gA THEME_HERDR=(
   kanagawa-lotus       kanagawa-lotus    # exact
   ayu-dark             terminal          # no herdr ayu -> terminal; tune
   ayu-mirage           terminal          # -> terminal
-  ayu-light            terminal          # -> terminal
+  ayu-light            one-light         # -> one-light
   everforest-dark      terminal          # no herdr everforest -> terminal; tune
   everforest-light     gruvbox-light     # -> gruvbox-light
   night-owl            terminal          # -> terminal
@@ -210,8 +202,6 @@ typeset -gA THEME_HERDR=(
   github-dark          terminal          # terminal
   github-light         terminal          # -> terminal
   vesper               vesper            # exact (herdr ships vesper)
-  melange-dark         gruvbox           # gruvbox
-  melange-light        terminal          # -> terminal
   synthwave-84         dracula           # no herdr synthwave -> Ghostty ANSI; tune
 )
 
@@ -259,8 +249,6 @@ typeset -gA THEME_HUNK=(
   github-dark          github-dark-default   # shiki (exact)
   github-light         github-light-default  # shiki (exact)
   vesper               vesper                # shiki (exact)
-  melange-dark         gruvbox-dark-medium   # no shiki melange; nearest warm-dark; tune
-  melange-light        vitesse-light         # -> vitesse-light
   synthwave-84         synthwave-84          # shiki (exact)
 )
 
@@ -303,8 +291,6 @@ typeset -gA THEME_VIVID=(
   github-dark          one-dark              # no vivid github; nearest neutral-dark; tune
   github-light         modus-operandi        # clean neutral light ~ github light; tune
   vesper               zenburn               # no vivid vesper; nearest warm-muted-dark; tune
-  melange-dark         gruvbox-dark          # no vivid melange; nearest warm-dark; tune
-  melange-light        gruvbox-light         # nearest warm-light; tune
   synthwave-84         cyberdream            # no vivid synthwave; nearest neon-dark; tune
 )
 
@@ -348,8 +334,6 @@ typeset -gA THEME_BTOP=(
   github-dark          onedark               # no btop github; nearest neutral-dark; tune
   github-light         catppuccin_latte      # no btop github-light
   vesper               onedark               # no btop vesper; nearest minimal-dark; tune
-  melange-dark         gruvbox_dark          # no btop melange; nearest warm-dark; tune
-  melange-light        gruvbox_light         # no btop melange; nearest warm-light; tune
   synthwave-84         dracula               # no btop synthwave; nearest vibrant-purple-dark; tune
 )
 
@@ -393,8 +377,6 @@ typeset -gA THEME_ZED=(
   github-dark          "GitHub Dark"         # github-theme ext (closest registry pair to Dark Default)
   github-light         "GitHub Light"        # github-theme ext (closest registry pair to Light Default)
   vesper               "Vesper"              # vesper ext
-  melange-dark         "Melange Dark"        # melange ext
-  melange-light        "Melange Light"       # melange ext
   synthwave-84         "Synthwave84"         # synthwave84 ext (NO space/apostrophe)
 )
 
@@ -439,7 +421,5 @@ typeset -gA THEME_OPENCODE=(
   github-dark          system                # no opencode github; Ghostty ANSI. tune
   github-light         system                # no light built-in -> system
   vesper               system                # no opencode vesper; Ghostty ANSI. tune
-  melange-dark         system                # no opencode melange; Ghostty ANSI. tune
-  melange-light        system                # no light built-in -> system
   synthwave-84         system                # no opencode synthwave; Ghostty ANSI. tune
 )
