@@ -18,7 +18,7 @@ Reference for driving the fixed `codex exec` reviewer from any invoking host, su
 
 Every round carries `-m gpt-5.6-sol -c model_reasoning_effort=high` on the command line. The pin is the point: `codex exec` otherwise inherits `~/.codex/config.toml`, which is shared with interactive Codex sessions and gets retuned for whatever they are doing. A review's depth is a property of the review, not of whatever the last session left in the config.
 
-Both flags are load-bearing. `high` is where the two axes find defects a cheaper effort walks past, and reviews compare across rounds — a round run at a different model or effort is not comparable to the one before it, so residuals and oscillation stop meaning anything.
+Both flags are load-bearing. `high` is where the two axes find defects a cheaper effort walks past, and reviews compare across rounds — a round run at a different model or effort is not comparable to the one before it, so residuals and non-convergence stop meaning anything.
 
 Keep the pin on both the round-1 command and the resume command. Each shell call is fresh, so the flags cannot be hoisted into a shared variable; they are repeated because they must be.
 

@@ -7,9 +7,11 @@ Codex reviews, a dedicated subagent remediates, and the loop repeats until **cle
 
 **Clean** is the terminal state: no `blocking` and no `should-fix` finding on either axis. Nits alone are clean.
 
+Before the first round, read [`FINDING-QUALITY.md`](FINDING-QUALITY.md). Its credible-finding threshold and proportional-remediation rule govern every review, remediation, and judgment in the loop.
+
 Findings move as a **file**, never as prose you retype. Every path, line number, and quotation the reviewer emits reaches the remediating agent byte-identical — transcription is where paths break.
 
-One **defect class** is one violated invariant or required repair wherever it occurs in the reviewed change. The reviewer reports the class once, with every site attached.
+One **defect class** is one violated invariant or required repair wherever it credibly occurs in the reviewed change. The reviewer reports the class once, with every supported or plausible site attached.
 
 The **ledger** at `<boundary-dir>/ledger.jsonl` is the loop's memory: one JSON object per finding answered, carrying `round`, `id`, `outcome`, and `summary`. Which findings have recurred, how long each has been open, and whether a fix undid an earlier one are facts to look up there, not things to carry across a ten-minute background wait. Keep it one-line-per-finding — work not answering a finding, like a codebase-wide sweep, belongs in `remediation.md`, because an entry with no finding id is one the recurrence lookup cannot read.
 
@@ -29,8 +31,8 @@ The selected branch governs process launch, waiting, and remediator dispatch for
 Three conditions hand the loop back to the user. Everything else advances into the next round without asking.
 
 - **Design decision** — the remediator returned a finding `deferred`. Surface its analysis as written, in prose: the finding, each option with what it buys and what it costs, and the recommendation with the reasoning behind it. Then wait — the choice is the user's, and their answer is round N+1's input.
-- **Round 5 not clean** — round 5's review returned findings. Stop before sending a sixth. Report what survived, and with it the trajectory: findings per round, and the remediator's read on whether the loop was converging. Five rounds of shrinking, genuinely-new findings is a large change still being worked through; five rounds of the same size is churn. The user is deciding whether to keep going, so give them the shape of it rather than the last round alone.
-- **Oscillation** — the remediator reported the loop revisiting a state instead of approaching one: a fix that would undo an earlier fix, two findings whose fixes exclude each other, or a claim restated unchanged after the round that should have settled it. Surface its evidence and stop, because another round repeats the last one. A finding merely recurring is not this — the reviewer may simply be right that it is still open, and the remediator judges the difference against the ledger.
+- **Round 5 not clean** — round 5's review returned findings. Stop before sending a sixth. Report what survived, and with it the trajectory: findings per round, and the remediator's read on whether the loop was converging. Five rounds of shrinking, credible findings may be a large change still being worked through; five rounds of the same size or progressively less credible variants is churn. The user is deciding whether to keep going, so give them the shape of it rather than the last round alone.
+- **Non-convergence** — the remediator reported a reversal, cycle, unchanged restatement, or speculative spiral. Surface its ledger-backed evidence and stop, because another round repeats the state or searches progressively less credible variants. A recurring finding remains convergence only when new evidence exposes a credible supported failure left by the prior repair.
 
 ## 1. Pin the round
 
@@ -61,6 +63,7 @@ codex exec \
   --output-schema "$HOME/.agents/skills/review-loop/findings-schema.json" \
   -o "$ROUND/findings.json" \
   "Run the code-review skill at $HOME/.agents/skills/code-review/SKILL.md.
+Read and apply the finding threshold at $HOME/.agents/skills/review-loop/FINDING-QUALITY.md.
 Fixed point: $BASE
 Review prompt: $PROMPT_PATH
 Report every defect class through the output schema, naming every site where it occurs.
@@ -77,7 +80,8 @@ codex exec \
   -o "$ROUND/findings.json" \
   resume "$THREAD_ID" \
   "The prior findings were remediated in: $PREVIOUS_ROUND/remediation.md
-Re-verify each one against the current tree, and review the remediation commits for defects they introduce.
+Read and apply the finding threshold at $HOME/.agents/skills/review-loop/FINDING-QUALITY.md.
+This is a convergence pass. Re-verify each prior finding against the current tree, and review the remediation commits for credible regressions they introduce. For every genuinely new finding, state the new evidence that makes its trigger credible.
 $RECURRENCE
 Report residuals and anything new through the output schema, reusing ids for findings that still stand. Report each defect class once, with every remaining site attached.
 Every finding names a line this change introduced or modified, or a review-prompt requirement it left unmet."
@@ -99,7 +103,7 @@ Done when `findings.json` parses, `codex.log` ends in a non-error exit, the thre
 
 Using the selected host branch, dispatch one `review-remediator` subagent with the worktree, the path to `$ROUND/findings.json`, the path to the ledger, and the round number. Point it at the files; its shared brief is [`REMEDIATOR.md`](REMEDIATOR.md).
 
-Every finding goes to it, whatever its severity — including the ones the reviewer marked `requires_design_decision`, which it analyses rather than repairs. Fixed, rebutted, or deferred all turn on reading the cited code, so each is decided there rather than pre-judged here from the reviewer's prose.
+Every finding goes to it, whatever its severity — including the ones the reviewer marked `requires_design_decision`, which it analyses rather than repairs. Fixed, rebutted, or deferred all turn on reading the cited code and applying the credible-finding threshold, so each is decided there rather than pre-judged here from the reviewer's prose.
 
 It writes `$ROUND/remediation.md`, which is what round N+1 sends back to the reviewer.
 

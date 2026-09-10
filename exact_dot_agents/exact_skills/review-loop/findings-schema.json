@@ -39,11 +39,11 @@
           "sibling_sites": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "Every other site in this defect class — sharing the same violated invariant or required repair — as repository-relative path:line. Empty when the class occurs once. Search the reviewed change exhaustively so one finding carries the whole class rather than surfacing one site per round."
+            "description": "Every other credible site in this defect class — sharing the same violated invariant or required repair — as repository-relative path:line. Empty when the class occurs once. Search supported and plausible operation across the reviewed change so one finding carries the whole class rather than surfacing one site per round."
           },
           "finding": {
             "type": "string",
-            "description": "The full finding: what is wrong, the standard or spec line it breaches, and the evidence. Prose, as long as it needs to be. When sibling_sites is non-empty, state what makes the sites one defect class."
+            "description": "The full finding required by FINDING-QUALITY.md: observable harm, credible trigger, and evidence, including the standard or spec line breached. When sibling_sites is non-empty, state what makes the sites one defect class."
           },
           "requires_design_decision": {
             "type": "boolean",
@@ -79,11 +79,11 @@
           "sibling_sites": {
             "type": "array",
             "items": { "type": "string" },
-            "description": "Every other site in this defect class — sharing the same violated invariant or required repair — as repository-relative path:line. Empty when the class occurs once. Search the reviewed change exhaustively so one finding carries the whole class rather than surfacing one site per round."
+            "description": "Every other credible site in this defect class — sharing the same violated invariant or required repair — as repository-relative path:line. Empty when the class occurs once. Search supported and plausible operation across the reviewed change so one finding carries the whole class rather than surfacing one site per round."
           },
           "finding": {
             "type": "string",
-            "description": "The full finding, quoting the spec line it rests on. When sibling_sites is non-empty, state what makes the sites one defect class."
+            "description": "The full finding required by FINDING-QUALITY.md: observable harm, credible trigger, and evidence, quoting the spec line it rests on. When sibling_sites is non-empty, state what makes the sites one defect class."
           },
           "requires_design_decision": {
             "type": "boolean",
