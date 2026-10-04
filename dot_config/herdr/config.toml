@@ -10,10 +10,8 @@ onboarding = false
 # the map, not these lines. Keep the fence comments intact.
 # >>> theme-controller (managed) >>>
 [theme]
-name = "one-light"
-auto_switch = true
-dark_name = "vesper"
-light_name = "one-light"
+name = "rose-pine-dawn"
+auto_switch = false
 # <<< theme-controller (managed) <<<
 
 [terminal]
