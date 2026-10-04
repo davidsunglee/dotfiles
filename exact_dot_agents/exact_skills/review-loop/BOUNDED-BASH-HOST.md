@@ -62,7 +62,7 @@ mkdir "$REMEDIATOR_PROCESS"
   codex exec \
     -C "$WORKTREE" --approve-for-me \
     --add-dir "$(dirname "$LEDGER")" \
-    -m gpt-5.6-sol -c model_reasoning_effort=high \
+    -m gpt-6.1-sol -c model_reasoning_effort=high \
     -o "$ROUND/remediator-final.txt" \
     "Read $HOME/.agents/skills/review-loop/REMEDIATOR.md completely and follow it as the authoritative brief.
 Worktree: $WORKTREE
