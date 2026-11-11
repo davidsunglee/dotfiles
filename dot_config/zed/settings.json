@@ -51,7 +51,7 @@
     "diagnostics": false,
     "metrics": false
   },
-  "theme": { "mode": "dark", "light": "Everforest Dark Medium (regular)", "dark": "Everforest Dark Medium (regular)" },
+  "theme": { "mode": "system", "light": "Night Owl Light", "dark": "Vesper" },
   "icon_theme": "Warm Charmed Icons",
 
   "buffer_font_size": 15,
