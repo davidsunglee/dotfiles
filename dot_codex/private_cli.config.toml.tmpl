@@ -1,7 +1,7 @@
 approvals_reviewer = "auto_review"
 cli_auth_credentials_store = "file"
-model = "gpt-6.1-sol"
-model_reasoning_effort = "high"
+model = "gpt-6-astra"
+model_reasoning_effort = "medium"
 service_tier = "default"
 
 [projects."{{ .chezmoi.homeDir }}/Code/pi-config"]
@@ -24,6 +24,7 @@ trust_level = "trusted"
 
 [features]
 hooks = true
+memories = true
 
 [hooks.state]
 
@@ -42,10 +43,17 @@ trusted_hash = "sha256:15d4f008499dd02b3a5f278b3411e9be47ec9730efae45826849c1bf0
 [hooks.state."{{ .chezmoi.homeDir }}/.codex/hooks.json:stop:0:0"]
 trusted_hash = "sha256:1a178fb1964da48bac6eda961ee1c9164cc7abf099a8c37149f196b187603a15"
 
+[hooks.state."{{ .chezmoi.homeDir }}/.codex/hooks.json:interrupt:0:0"]
+trusted_hash = "sha256:c88a100f877779416a736b8a3ad14ca5fd24cbc9982ad2107d0549489bfab0b3"
+enabled = true
+
+[hooks.state."{{ .chezmoi.homeDir }}/.codex/hooks.json:session_start:1:0"]
+trusted_hash = "sha256:7ac16f27c7b29bec5952047d0a2193dc7595d731faca5a12c3c476194bd2d532"
+
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "context-used", "context-window-size", "thread-title"]
 status_line_use_colors = true
-theme = "base16"
+theme = "base16-eighties-dark"
 screen_reader_detection_done = true
 
 [tui.model_availability_nux]

@@ -328,7 +328,7 @@ typeset -gA THEME_BTOP=(
   ayu-light            catppuccin_latte      # no btop ayu-light
   everforest-dark      everforest-dark-medium
   everforest-light     everforest-light-medium
-  night-owl            night-owl             # btop built-in .theme
+  night-owl            catppuccin_mocha      # tuned theme
   night-owl-light      catppuccin_latte      # no btop night-owl-light
   monokai-pro          monokai               # btop built-in .theme
   github-dark          onedark               # no btop github; nearest neutral-dark; tune
