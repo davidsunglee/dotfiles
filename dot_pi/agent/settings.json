@@ -1,15 +1,15 @@
 {
-  "lastChangelogVersion": "1.0.3",
+  "lastChangelogVersion": "1.5.2",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.6-sol",
-  "defaultThinkingLevel": "high",
+  "defaultModel": "gpt-6-astra",
+  "defaultThinkingLevel": "medium",
   "enabledModels": [
-    "anthropic/claude-fable-5-1",
+    "anthropic/claude-fable-5-2",
     "anthropic/claude-opus-5-5",
     "anthropic/claude-sonnet-5-5",
     "openai-codex/gpt-6-astra",
     "openai-codex/gpt-6.1-sol",
-    "openai-codex/gpt-6-luna"
+    "openai-codex/gpt-6.1-terra"
   ],
   "packages": [
     "npm:pi-web-access",
@@ -25,5 +25,9 @@
   "theme": "nord",
   "warnings": {
     "anthropicExtraUsage": false
+  },
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0",
+    "{\"source\":\"npm:@aliou/pi-processes\",\"scope\":\"user\"}": "0.13.6"
   }
 }
