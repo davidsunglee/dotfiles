@@ -176,31 +176,141 @@ _theme_write_zed() {
   ' "$conf" > "$tmp" && mv "$tmp" "$conf"
 }
 
-# --- opencode (rewrites the fenced "theme" key in opencode.jsonc) -------------
-# opencode reads config at launch and has no theme env var, so we keep the theme
-# key current (synced on OS flips via the precmd hook). opencode.jsonc is JSONC
-# (comments OK); the managed key sits between // fence markers, placed first with
-# a trailing comma so it stays valid whatever other keys follow. THEME_OPENCODE
-# falls back to "system" (terminal-ANSI-adaptive) where no exact built-in fits.
+# --- opencode (sets "theme" in cli.json) -------------------------------------
+# opencode 2.x keeps TUI settings in ~/.config/opencode/cli.json (pure JSON,
+# mode 600, also rewritten by opencode itself when you change settings in-app).
+# 1.x's opencode.jsonc "theme" key and tui.json were migrated away (2026-07/10),
+# so we set {"theme": {"name", "mode"}} with jq. Every 2.x built-in has light AND
+# dark variants picked by mode, so mode follows THEME_ISLIGHT (explicit, since
+# mode "system" asks the terminal, which is unreliable inside herdr/Rex). Reads
+# config at launch, so precmd keeps it current on OS flips.
 _theme_write_opencode() {
-  local conf="$HOME/.config/opencode/opencode.jsonc"
-  [[ -f "$conf" ]] || return 0
-  grep -q '// >>> theme-controller' "$conf" || return 0
-  local slug="${1:-$(_theme_effective)}" name
+  local conf="$HOME/.config/opencode/cli.json"
+  [[ -f "$conf" ]] && (( $+commands[jq] )) || return 0
+  local slug="${1:-$(_theme_effective)}" name mode=dark
   name="${THEME_OPENCODE[$slug]:-system}"
-  grep -q "^  \"theme\": \"$name\",\$" "$conf" && return 0   # already current
+  [[ -n "${THEME_ISLIGHT[$slug]}" ]] && mode=light
+  jq -e --arg n "$name" --arg m "$mode" '.theme.name == $n and .theme.mode == $m' "$conf" >/dev/null 2>&1 && return 0
   local tmp="$conf.$$"
-  awk -v line="  \"theme\": \"$name\"," '
-    /\/\/ >>> theme-controller/ { print; print line; skip=1; next }
-    /\/\/ <<< theme-controller/ { skip=0; print; next }
-    !skip { print }
-  ' "$conf" > "$tmp" && mv "$tmp" "$conf"
+  # cat over the original (not mv) so the file keeps its 600 permissions.
+  jq --arg n "$name" --arg m "$mode" '.theme = {name: $n, mode: $m}' "$conf" > "$tmp" 2>/dev/null &&
+    cat "$tmp" > "$conf"
+  rm -f "$tmp"
+}
+
+# --- Rex (the multiplexer app; driven through its client actions) -----------
+# Rex renders its own terminals and ignores Ghostty's config. It keeps one light
+# and one dark theme in its macOS defaults (com.superlogical.rex), but the running
+# app does NOT notice outside `defaults write`s, so every change goes through
+# `rex -C <app> do client.theme.*`, which needs Remote Control on (Rex Settings >
+# Rex Server). We only READ defaults: Workspace.{light,dark}ThemeID, the forced
+# Workspace.appearance (light|dark; absent/auto/system = follows macOS), and
+# Workspace.customThemes (JSON data: imported themes with id/appearance/name).
+#
+# A slug's Rex theme is THEME_REX[slug] (a Rex theme id, e.g. a built-in) or, by
+# default, its Ghostty theme file imported once (client.theme.import). Imported
+# ids are random per Mac, so we look them up by file name, never store them.
+#
+# Rex quirks this works around: a theme always lands in the slot matching its own
+# light/dark type, and selecting one whose type differs from what Rex is showing
+# FORCES Rex out of Auto into that mode, which no action can undo (only Settings).
+# So unpinned, we only touch the slot Rex is showing and pick up the other slot at
+# the first prompt after a macOS flip (precmd). Pinned, we force Rex's mode to the
+# pin's type on purpose; `theme auto` then reminds you to click Auto in Settings.
+typeset -g THEME_REX_DEFAULTS="com.superlogical.rex"
+
+_theme_rex_bin() {  # -> path of the rex CLI. Rex only puts it on PATH inside its own
+  # terminals, so also try $REX_BIN_DIR and the app's install location (needed
+  # from plain Ghostty shells and from Rex's Lua actions).
+  local b
+  for b in "${commands[rex]}" "${REX_BIN_DIR:+$REX_BIN_DIR/rex}" \
+           "$HOME/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"; do
+    [[ -n "$b" && -x "$b" ]] && { print -r -- "$b"; return 0 }
+  done
+  return 1
+}
+
+_theme_rex_client() {  # -> client id of the Rex app on THIS Mac (empty if none)
+  "$(_theme_rex_bin)" --autostart=false client ls --json 2>/dev/null | jq -r --argjson uid "$UID" '
+    first(.clients[] | select(.info.kind == "app" and .principal.transport == "unix"
+                       and .principal.uid == $uid) | .client_id) // empty' 2>/dev/null
+}
+
+_theme_rex_custom() {  # -> "id<TAB>appearance<TAB>name" per imported Rex theme
+  local tmp="${TMPDIR:-/tmp}/theme-rex.$$.plist"
+  defaults export "$THEME_REX_DEFAULTS" "$tmp" 2>/dev/null || return 1
+  /usr/libexec/PlistBuddy -c 'Print :Workspace.customThemes' "$tmp" 2>/dev/null |
+    jq -r '.[] | [.id, .appearance, (.source.ghosttyFile.fileName // .name)] | @tsv' 2>/dev/null
+  rm -f "$tmp"
+}
+
+_theme_rex_shown() {  # -> the appearance Rex is showing: "light" | "dark"
+  local mode; mode="$(defaults read "$THEME_REX_DEFAULTS" Workspace.appearance 2>/dev/null)"
+  [[ "$mode" == (light|dark) ]] && print -r -- "$mode" || _theme_appearance
+}
+
+_theme_rex_forced() {  # 0 if Rex is forced into light/dark instead of Auto
+  [[ "$(defaults read "$THEME_REX_DEFAULTS" Workspace.appearance 2>/dev/null)" == (light|dark) ]]
+}
+
+_theme_ghostty_file() {  # _theme_ghostty_file <name> -> path of that Ghostty theme file
+  local f
+  for f in "$HOME/.config/ghostty/themes/$1" \
+           "/Applications/Ghostty.app/Contents/Resources/ghostty/themes/$1"; do
+    [[ -f "$f" ]] && { print -r -- "$f"; return 0 }
+  done
+  return 1
+}
+
+# _theme_write_rex [slug]  Notes go to stderr; precmd runs it backgrounded & silent.
+_theme_write_rex() {
+  (( $+commands[jq] )) || return 0
+  local rex; rex="$(_theme_rex_bin)" || return 0
+  local slug="${1:-$(_theme_effective)}" pin client
+  [[ -n "$slug" ]] || return 0
+  client="$(_theme_rex_client)"; [[ -n "$client" ]] || return 0   # Rex app not running
+  pin="$(_theme_get pin)"
+
+  # Resolve the slug to a Rex theme id + its light/dark type (as Rex judges it).
+  local id="" kind="" name="" file="" line
+  if [[ -n "${THEME_REX[$slug]}" ]]; then
+    id="${THEME_REX[$slug]}"
+    kind=dark; [[ -n "${THEME_ISLIGHT[$slug]}" ]] && kind=light
+  else
+    name="${THEME_GHOSTTY[$slug]}"
+    for line in "${(@f)$(_theme_rex_custom)}"; do
+      [[ "${line##*$'\t'}" == "$name" ]] || continue
+      id="${line%%$'\t'*}"; kind="${${line#*$'\t'}%%$'\t'*}"; break
+    done
+    if [[ -z "$id" ]]; then   # not imported yet; Rex will judge its type on import
+      file="$(_theme_ghostty_file "$name")" || { print -r -- "theme: no Ghostty theme file '$name' to import into Rex" >&2; return 1 }
+      kind=dark; [[ -n "${THEME_ISLIGHT[$slug]}" ]] && kind=light
+    fi
+  fi
+
+  local shown; shown="$(_theme_rex_shown)"
+  if [[ "$kind" != "$shown" ]]; then
+    if [[ -z "$pin" ]]; then
+      # Unpinned: selecting it would knock Rex out of Auto. Leave Rex alone.
+      print -r -- "theme: Rex is showing its $shown theme; '$slug' is a $kind theme, so Rex was left unchanged" >&2
+      return 0
+    fi
+    "$rex" --autostart=false -C "$client" do client.appearance.switch_mode mode="$kind" >/dev/null 2>&1 || {
+      print -r -- "theme: Rex isn't accepting actions; turn on Remote Control in Rex Settings > Rex Server" >&2; return 1 }
+  fi
+
+  if [[ -n "$id" ]]; then
+    [[ "$(defaults read "$THEME_REX_DEFAULTS" "Workspace.${kind}ThemeID" 2>/dev/null)" == "$id" ]] && return 0
+    "$rex" --autostart=false -C "$client" do client.theme.change name="$id" >/dev/null 2>&1
+  else
+    "$rex" --autostart=false -C "$client" do client.theme.import path="$file" >/dev/null 2>&1
+  fi || { print -r -- "theme: Rex isn't accepting actions; turn on Remote Control in Rex Settings > Rex Server" >&2; return 1 }
 }
 
 # --- propagate a change to every tool ---------------------------------------
 # fzf/bat/delta/LS_COLORS follow via env (_theme_env); Ghostty, herdr, hunk,
-# btop, Zed, opencode via their config files. Neovim polls; lazygit reads at
-# launch — no writers needed here.
+# btop, Zed, opencode via their config files; Rex via its client actions.
+# Neovim polls; lazygit reads at launch — no writers needed here.
 _theme_propagate() {
   _theme_env
   _theme_write_ghostty
@@ -209,6 +319,10 @@ _theme_propagate() {
   _theme_write_btop
   _theme_write_zed
   _theme_write_opencode
+  _theme_write_rex
+  # Everything precmd would do on a slug change is done; don't let the next
+  # prompt redo it (a second Rex import before Rex saves the first = duplicate).
+  _THEME_CUR="$(_theme_effective)"
 }
 
 # --- precmd hook: keep this shell's env in sync with OS appearance -----------
@@ -223,6 +337,9 @@ _theme_precmd() {
   _theme_write_hunk "$slug"
   _theme_write_btop "$slug"
   _theme_write_opencode "$slug"
+  # Rex flips natively between its two slots; this catches up a slot that was
+  # changed while Rex wasn't showing it. Backgrounded: it makes a few rex calls.
+  _theme_write_rex "$slug" >/dev/null 2>&1 &|
 }
 
 # --- user-facing command -----------------------------------------------------
@@ -237,6 +354,13 @@ theme() {
       local pin; pin="$(_theme_get pin)"
       print -r -- "pinned     : ${pin:-(auto — follows appearance)}"
       print -r -- "effective  : $eff"
+      if defaults read "$THEME_REX_DEFAULTS" >/dev/null 2>&1; then
+        if _theme_rex_forced; then
+          print -r -- "rex        : forced $(_theme_rex_shown) (set Color scheme to Auto in Rex Settings to follow appearance)"
+        else
+          print -r -- "rex        : auto — follows appearance"
+        fi
+      fi
       ;;
     dark|light)
       if ! _theme_valid "$2"; then print -r -- "theme: unknown slug '$2' (try: theme list)" >&2; return 1; fi
@@ -251,6 +375,7 @@ theme() {
     auto)
       _theme_set pin ""; _theme_propagate
       print -r -- "back to auto (dark=$(_theme_get dark), light=$(_theme_get light)). Reload Ghostty to apply."
+      _theme_rex_forced && print -r -- "Rex is still forced to $(_theme_rex_shown): set Settings > Interface > Appearance > Color scheme to Auto (no command can)."
       ;;
     reload)
       # Re-source the maps (after editing any THEME_* map) and re-apply. Drop the

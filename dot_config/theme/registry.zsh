@@ -7,6 +7,7 @@
 #   btop          THEME_BTOP below (+ .theme files in ~/.config/btop/themes/)
 #   zed           THEME_ZED below (+ auto_install_extensions in settings.json)
 #   opencode      THEME_OPENCODE below (+ custom JSONs in ~/.config/opencode/themes/)
+#   rex           THEME_REX below (default: the slug's Ghostty theme, imported into Rex)
 
 typeset -ga THEME_SLUGS=(
   poimandres nord
@@ -380,46 +381,54 @@ typeset -gA THEME_ZED=(
   synthwave-84         "Synthwave84"         # synthwave84 ext (NO space/apostrophe)
 )
 
-# slug -> opencode theme. opencode built-ins are coarse (tokyonight/catppuccin/
-# nord/one-dark/gruvbox/kanagawa/ayu/everforest, all dark), so map exact where a
-# built-in exists and fall back to "system" (opencode's terminal-ANSI-adaptive
-# theme -- the herdr `terminal` equivalent; since Ghostty's ANSI is themed
-# per-slug, it tracks well). Every LIGHT slug -> system (no light built-ins).
-# poimandres is a custom JSON in ~/.config/opencode/themes/. Drop more custom
-# JSONs there to tighten the `system` fallbacks over time.
+# slug -> opencode 2.x theme name (cli.json "theme.name"; "theme.mode" comes from
+# THEME_ISLIGHT). 2.x built-ins (from the 2.2.7 binary): aura ayu catppuccin
+# catppuccin-frappe catppuccin-macchiato cobalt2 cursor dracula everforest flexoki
+# github gruvbox kanagawa material matrix mercury monokai nightowl nord one-dark
+# osaka-jade orng lucent-orng palenight rosepine solarized synthwave84 tokyonight
+# vesper vercel zenburn carbonfox (+ system). EVERY built-in has light+dark
+# variants, so light slugs map to their family. poimandres is a custom JSON in
+# ~/.config/opencode/themes/. "system" = terminal-ANSI-adaptive fallback.
 typeset -gA THEME_OPENCODE=(
-  poimandres           poimandres            # custom JSON already installed
+  poimandres           poimandres            # custom JSON
   nord                 nord
-  rose-pine            system                # no built-in; Ghostty ANSI is rose-pine. tune
-  rose-pine-moon       system
-  rose-pine-dawn       system
-  catppuccin-mocha     catppuccin            # opencode's catppuccin == mocha
+  rose-pine            rosepine
+  rose-pine-moon       rosepine              # no moon variant. tune
+  rose-pine-dawn       rosepine              # light variant
+  catppuccin-mocha     catppuccin
   catppuccin-macchiato catppuccin-macchiato
-  catppuccin-frappe    catppuccin            # no frappe built-in; tune
-  catppuccin-latte     system                # no latte/light built-in; tune
+  catppuccin-frappe    catppuccin-frappe
+  catppuccin-latte     catppuccin            # light variant
   tokyonight-night     tokyonight
-  tokyonight-storm     tokyonight
-  tokyonight-moon      tokyonight
-  tokyonight-day       system                # no tokyo light built-in; tune
+  tokyonight-storm     tokyonight            # no storm variant. tune
+  tokyonight-moon      tokyonight            # no moon variant. tune
+  tokyonight-day       tokyonight            # light variant
   gruvbox-dark         gruvbox
-  gruvbox-light        system                # opencode gruvbox is dark; light -> system
-  solarized-dark       system                # no opencode solarized; tune (custom JSON)
-  solarized-light      system
+  gruvbox-light        gruvbox
+  solarized-dark       solarized
+  solarized-light      solarized
   one-dark             one-dark
-  one-light            system                # one-dark is dark; light -> system
-  dracula              system                # no opencode dracula; tune (custom JSON)
+  one-light            one-dark              # light variant
+  dracula              dracula
   kanagawa-wave        kanagawa
-  kanagawa-lotus       system                # kanagawa built-in is dark; lotus -> system
+  kanagawa-lotus       kanagawa              # light variant
   ayu-dark             ayu
-  ayu-mirage           ayu
-  ayu-light            system                # ayu light -> system
+  ayu-mirage           ayu                   # no mirage variant. tune
+  ayu-light            ayu
   everforest-dark      everforest
-  everforest-light     system                # everforest built-in is dark; light -> system
-  night-owl            system                # no opencode night-owl; Ghostty ANSI. tune (custom JSON)
-  night-owl-light      system                # no light built-in -> system
-  monokai-pro          system                # no opencode monokai; Ghostty ANSI. tune
-  github-dark          system                # no opencode github; Ghostty ANSI. tune
-  github-light         system                # no light built-in -> system
-  vesper               system                # no opencode vesper; Ghostty ANSI. tune
-  synthwave-84         system                # no opencode synthwave; Ghostty ANSI. tune
+  everforest-light     everforest
+  night-owl            nightowl
+  night-owl-light      nightowl              # light variant
+  monokai-pro          monokai               # monokai, not Monokai Pro. tune
+  github-dark          github
+  github-light         github
+  vesper               vesper
+  synthwave-84         synthwave84
+)
+
+# slug -> Rex theme id, for slugs that should use a theme Rex already has (e.g.
+# one of Rex's built-ins like "basalt-shore") instead of importing the slug's
+# Ghostty theme file. Leave a slug out to import its THEME_GHOSTTY theme (the
+# default; imported once per Mac, then looked up by name). See _theme_write_rex.
+typeset -gA THEME_REX=(
 )

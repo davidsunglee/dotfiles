@@ -1,5 +1,6 @@
 # Unified theme system entrypoint — sourced from ~/.zshrc.
-# Drives Ghostty, fzf, bat, delta, Neovim, herdr, hunk, lazygit from one state
+# Drives Ghostty, Rex, fzf, bat, delta, Neovim, herdr, hunk, lazygit, LS_COLORS,
+# btop, Zed, opencode from one state
 # file (~/.config/theme/state) + macOS light/dark appearance.
 # Command: `theme` (run `theme` with no args for status; `theme list` for slugs).
 
