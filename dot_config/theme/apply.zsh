@@ -217,7 +217,28 @@ _theme_write_opencode() {
 # So unpinned, we only touch the slot Rex is showing and pick up the other slot at
 # the first prompt after a macOS flip (precmd). Pinned, we force Rex's mode to the
 # pin's type on purpose; `theme auto` then reminds you to click Auto in Settings.
+#
+# A theme you pick in Rex itself is left alone: cache/rex records the slug last
+# sent to each slot, and a slot is only sent again when its slug differs from
+# that record (you changed it with `theme`). `theme reload` clears the cache,
+# which re-sends the slot Rex is showing.
 typeset -g THEME_REX_DEFAULTS="com.superlogical.rex"
+typeset -g THEME_REX_SENT="$THEME_DIR/cache/rex"
+
+_theme_rex_sent() {  # _theme_rex_sent <light|dark> -> slug last sent to that slot
+  [[ -r "$THEME_REX_SENT" ]] || return 0
+  local line
+  for line in "${(@f)$(<"$THEME_REX_SENT")}"; do
+    [[ "$line" == "$1="* ]] && { print -r -- "${line#*=}"; return 0 }
+  done
+}
+
+_theme_rex_record() {  # _theme_rex_record <light|dark> <slug>
+  local other=light; [[ "$1" == light ]] && other=dark
+  local keep; keep="$(_theme_rex_sent "$other")"
+  mkdir -p "${THEME_REX_SENT:h}"
+  { print -r -- "$1=$2"; [[ -z "$keep" ]] || print -r -- "$other=$keep" } >| "$THEME_REX_SENT"
+}
 
 _theme_rex_bin() {  # -> path of the rex CLI. Rex only puts it on PATH inside its own
   # terminals, so also try $REX_BIN_DIR and the app's install location (needed
@@ -266,8 +287,10 @@ _theme_ghostty_file() {  # _theme_ghostty_file <name> -> path of that Ghostty th
 _theme_write_rex() {
   (( $+commands[jq] )) || return 0
   local rex; rex="$(_theme_rex_bin)" || return 0
-  local slug="${1:-$(_theme_effective)}" pin client
+  local slug="${1:-$(_theme_effective)}" pin client slot=dark
   [[ -n "$slug" ]] || return 0
+  [[ -n "${THEME_ISLIGHT[$slug]}" ]] && slot=light
+  [[ "$(_theme_rex_sent $slot)" == "$slug" ]] && return 0   # already sent; keep any pick made in Rex
   client="$(_theme_rex_client)"; [[ -n "$client" ]] || return 0   # Rex app not running
   pin="$(_theme_get pin)"
 
@@ -299,12 +322,14 @@ _theme_write_rex() {
       print -r -- "theme: Rex isn't accepting actions; turn on Remote Control in Rex Settings > Rex Server" >&2; return 1 }
   fi
 
-  if [[ -n "$id" ]]; then
-    [[ "$(defaults read "$THEME_REX_DEFAULTS" "Workspace.${kind}ThemeID" 2>/dev/null)" == "$id" ]] && return 0
-    "$rex" --autostart=false -C "$client" do client.theme.change name="$id" >/dev/null 2>&1
-  else
-    "$rex" --autostart=false -C "$client" do client.theme.import path="$file" >/dev/null 2>&1
-  fi || { print -r -- "theme: Rex isn't accepting actions; turn on Remote Control in Rex Settings > Rex Server" >&2; return 1 }
+  local ok=0
+  if [[ -z "$id" ]]; then
+    "$rex" --autostart=false -C "$client" do client.theme.import path="$file" >/dev/null 2>&1 || ok=1
+  elif [[ "$(defaults read "$THEME_REX_DEFAULTS" "Workspace.${kind}ThemeID" 2>/dev/null)" != "$id" ]]; then
+    "$rex" --autostart=false -C "$client" do client.theme.change name="$id" >/dev/null 2>&1 || ok=1
+  fi
+  (( ok == 0 )) || { print -r -- "theme: Rex isn't accepting actions; turn on Remote Control in Rex Settings > Rex Server" >&2; return 1 }
+  _theme_rex_record $slot "$slug"
 }
 
 # --- propagate a change to every tool ---------------------------------------
@@ -338,7 +363,8 @@ _theme_precmd() {
   _theme_write_btop "$slug"
   _theme_write_opencode "$slug"
   # Rex flips natively between its two slots; this catches up a slot that was
-  # changed while Rex wasn't showing it. Backgrounded: it makes a few rex calls.
+  # changed while Rex wasn't showing it (a no-op unless its slug differs from the
+  # one last sent). Backgrounded: it makes a few rex calls.
   _theme_write_rex "$slug" >/dev/null 2>&1 &|
 }
 
@@ -378,8 +404,9 @@ theme() {
       _theme_rex_forced && print -r -- "Rex is still forced to $(_theme_rex_shown): set Settings > Interface > Appearance > Color scheme to Auto (no command can)."
       ;;
     reload)
-      # Re-source the maps (after editing any THEME_* map) and re-apply. Drop the
-      # LS_COLORS cache so THEME_VIVID edits take effect.
+      # Re-source the maps (after editing any THEME_* map) and re-apply. Dropping
+      # the cache makes THEME_VIVID edits take effect and re-sends Rex's theme,
+      # replacing any theme picked in Rex itself.
       rm -rf "$THEME_DIR/cache"
       source "$THEME_DIR/registry.zsh"; source "$THEME_DIR/apply.zsh"; _theme_propagate
       print -r -- "reloaded registry maps and re-applied (effective: $(_theme_effective))."
